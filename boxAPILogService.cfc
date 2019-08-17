@@ -1,6 +1,6 @@
-<cfcomponent name="boxAPILog" output="false" hint="Submits api log information to the database">
+<cfcomponent name="boxAPILogService" output="false" hint="Submits api log information to the database">
 
-	<cffunction name="init" returntype="boxAPILog" access="public" output="false" hint="Constructor">
+	<cffunction name="init" returntype="boxAPILogService" access="public" output="false" hint="Constructor">
 		<cfargument name="datasource"  type="string"  required="true" default=""      hint="" />
 		<cfargument name="tableName"   type="string"  required="true" default=""      hint="" />
 		<cfargument name="createTable" type="boolean" required="true" default="false" hint="" />
@@ -20,11 +20,11 @@
 		<cfargument name="method"      type="string"  required="true" />
 		<cfargument name="getasbinary" type="boolean" required="true" default="no"   />
 		<cfargument name="httpParams"  type="array"   required="true" default="no"   />
-		<cfset localvars.return = -1 />
+		<cfset local.return = -1 />
 
 		<cftry>
 			<!--- QUERY - INSERT --->
-			<cfquery datasource="#variables.datasource#" result="localvars.ins">
+			<cfquery datasource="#variables.datasource#" result="local.ins">
 				INSERT INTO [#variables.tableName#]
 				(
 					url,
@@ -41,7 +41,7 @@
 					<cfqueryparam cfsqltype="cf_sql_timestamp" value="#now()#" />
 				)
 			</cfquery>
-			<cfset localvars.return = localvars.ins.generatedKey />
+			<cfset local.return = local.ins.generatedKey />
 
 			<cfcatch>
 
@@ -49,9 +49,9 @@
 					<cfset exceptionStruct = cfcatch />
 					<cfset extraInfoStruct = structNew() />
 					<cfset extraInfoStruct._callStack = CallStackGet() />
-					<cfset extraInfoStruct.arguments = arguments />
-					<cfset extraInfoStruct.localvars = localvars />
-					<cfset extraInfoStruct.variables = variables />
+					<cfset extraInfoStruct.arguments  = arguments />
+					<cfset extraInfoStruct.local      = local />
+					<cfset extraInfoStruct.variables  = variables />
 
 					<cfset application.bugTracker.notifyService(
 					   message      = "Error logging API interaction to [#variables.tableName#] on #cgi.server_name#",
@@ -65,20 +65,16 @@
 	        </cfcatch>
         </cftry>
 
-		<cfreturn localvars.return />
+		<cfreturn local.return />
 	</cffunction>
 
 	<cffunction name="updateLog" access="public" returntype="void" hint="Sets a log">
 		<cfargument name="logID"        required="true"  type="numeric" hint="ID" />
 		<cfargument name="responseCode" required="false" type="string"  hint="response statuscode (200 OK,401 message, etc)" />
 		<cfargument name="response"     required="false" type="any"     hint="the API's full cfhttp response" />
-
-		<!--- Initialize localvars scope --->
-		<cfset var localvars = structNew() />
-
 		<cftry>
 			<!--- Update log event with response --->
-			<cfquery datasource="#variables.datasource#" result="localvars.update">
+			<cfquery datasource="#variables.datasource#" result="local.update">
 				UPDATE [#variables.tableName#]
 				SET
 
@@ -99,9 +95,9 @@
 					<cfset exceptionStruct = cfcatch />
 					<cfset extraInfoStruct = structNew() />
 					<cfset extraInfoStruct._callStack = CallStackGet() />
-					<cfset extraInfoStruct.arguments = arguments />
-					<cfset extraInfoStruct.localvars = localvars />
-					<cfset extraInfoStruct.variables = variables />
+					<cfset extraInfoStruct.arguments  = arguments />
+					<cfset extraInfoStruct.local      = local />
+					<cfset extraInfoStruct.variables  = variables />
 
 					<cfset application.bugTracker.notifyService(
 					   message      = "Error UPDATING API log to [#variables.tableName#] on #cgi.server_name#",
@@ -120,13 +116,9 @@
 
 	<cffunction name="hardDeleteLog" access="public" returntype="void" hint="Sets a log">
 		<cfargument name="logID" required="true" type="numeric"    hint="ID" />
-
-		<!--- Initialize localvars scope --->
-		<cfset var localvars = structNew() />
-
 		<cftry>
 			<!--- Update log event with response --->
-			<cfquery datasource="#variables.datasource#" result="localvars.update">
+			<cfquery datasource="#variables.datasource#" result="local.update">
 				DELETE FROM [#variables.tableName#]
 			    WHERE
 			    	boxApiLogID = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.logID#" />
@@ -137,9 +129,9 @@
 					<cfset exceptionStruct = cfcatch />
 					<cfset extraInfoStruct = structNew() />
 					<cfset extraInfoStruct._callStack = CallStackGet() />
-					<cfset extraInfoStruct.arguments = arguments />
-					<cfset extraInfoStruct.localvars = localvars />
-					<cfset extraInfoStruct.variables = variables />
+					<cfset extraInfoStruct.arguments  = arguments />
+					<cfset extraInfoStruct.local      = local />
+					<cfset extraInfoStruct.variables  = variables />
 
 					<cfset application.bugTracker.notifyService(
 					   message      = "Error DELETING API log from [#variables.tableName#] on #cgi.server_name#",
@@ -157,13 +149,9 @@
 	</cffunction>
 
 	<cffunction name="createLogDable" access="public" returntype="void" hint="Sets a log">
-
-		<!--- Initialize localvars scope --->
-		<cfset var localvars = structNew() />
-
 		<cftry>
 			<!--- Update log event with response --->
-			<cfquery datasource="#variables.datasource#" result="localvars.update">
+			<cfquery datasource="#variables.datasource#" result="local.update">
 				IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[#variables.tableName#]') AND type in (N'U'))
 				BEGIN
 					CREATE TABLE [dbo].[boxApiLog](
@@ -190,9 +178,9 @@
 					<cfset exceptionStruct = cfcatch />
 					<cfset extraInfoStruct = structNew() />
 					<cfset extraInfoStruct._callStack = CallStackGet() />
-					<cfset extraInfoStruct.arguments = arguments />
-					<cfset extraInfoStruct.localvars = localvars />
-					<cfset extraInfoStruct.variables = variables />
+					<cfset extraInfoStruct.arguments  = arguments />
+					<cfset extraInfoStruct.local      = local />
+					<cfset extraInfoStruct.variables  = variables />
 
 					<cfset application.bugTracker.notifyService(
 					   message      = "Error CREATING API log table [#variables.tableName#] on #cgi.server_name#",
@@ -208,6 +196,5 @@
 
 		<cfreturn />
 	</cffunction>
-
 
 </cfcomponent>

@@ -7,7 +7,7 @@
 	<cffunction name="init" returntype="boxAPIHandler" access="public" output="false" hint="Constructor">
 
 		<cfset variables.boxAuth      = createObject("component", "boxAuthentication") />
-		<cfset variables.boxAPILog    = createObject("component", "boxAPILog").init(request.DSN, "boxApiLog") />
+		<!--- <cfset variables.boxAPILog    = createObject("component", "boxAPILogService").init(request.DSN, "boxApiLog") /> --->
 		<cfset variables.JWT          = createObject("component", "jwtTools.JsonWebTokens") />
 		<cfset variables.access_token = "" />
 		<cfset variables.expires_in   = "" />
@@ -17,10 +17,10 @@
 	</cffunction>
 
 	<cffunction name="makeRequest"      returntype="any"    access="public" output="false" hint="">
-		<cfargument name="object"      type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[fields]; Object to affect (files|folders)                           " />
-		<cfargument name="objectID"    type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[fields]; BoxID of object being affected                             " />
-		<cfargument name="method"      type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[fields]; Action to be taken on the object.                          " />
-		<cfargument name="fields"      type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[fields]; Comma-separated list of fields to include in the response. " />
+		<cfargument name="object"      type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; Object to affect (files|folders)                           " />
+		<cfargument name="objectID"    type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; BoxID of object being affected                             " />
+		<cfargument name="method"      type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; Action to be taken on the object.                          " />
+		<cfargument name="queryParams" type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; Additional url parameters. " />
 		<cfargument name="jsonBody"    type="struct"  required="true" default="#structNew()#" hint="Parameters to be passed as http body, or formfield for file upload." />
 		<cfargument name="httpMethod"  type="string"  required="true" default="POST"          hint="cfhttp request method. GET,POST,PUT,DELETE,HEAD,TRACE,OPTIONS,PATCH" />
 		<cfargument name="userID"      type="string"  required="true" default=""              hint="Box user ID of who the action is being taken on behalf of" />
@@ -58,8 +58,8 @@
 			<cfset local.url &= arguments.method />
 		</cfif>
 
-		<cfif len(arguments.fields) >
-			<cfset local.url &= "?fields=" & arguments.fields />
+		<cfif len(arguments.queryParams) >
+			<cfset local.url &= "?" & arguments.queryParams />
 		</cfif>
 
 		<cfset arrayAppend(local.httpParams, { "type": "Header", "name": "Accept", "value": "application/json" }) />
@@ -105,7 +105,7 @@
 		<cfset variables.issued_at = now() />
 		<cfset local.return["exp"] = "#Int(floor(variables.issued_at.getTime()/1000) + 15)#" />
 		<cfset local.return["iss"] = variables.boxAuth.getClientID() />
-		<cfset local.return["sub"] = variables.boxAuth.getEnterpriseID() />
+		<cfset local.return["sub"] = " #trim(variables.boxAuth.getEnterpriseID())#" /> <!--- The space before the enterpriseID is required for ColdFusion. --->
 		<cfset local.return["box_sub_type"] = "enterprise" />
 		<cfset local.return["aud"] = "#this.boxAPIURL#oauth2/token" />
 		<cfset local.return["jti"] = '#replace(createUUID(), "-", "", "all")#' />
@@ -142,7 +142,7 @@
 		<cfargument name="logCall"     type="boolean" required="true" default="true" />
 
 		<cfset local.logID = 0 />
-		<cfif arguments.logCall>
+		<cfif structKeyExists(variables, "boxAPILog") AND arguments.logCall>
 			<cfset local.logID = variables.boxAPILog.setLog( argumentCollection = arguments ) />
 		</cfif>
 
@@ -156,7 +156,6 @@
 			</cfloop>
 		</cfhttp>
 
-		<cfset local.return = handleResponse(local.response, arguments.url, arguments.getasbinary) />
 		<cfif local.logID>
 			<cfset variables.boxAPILog.updateLog(
 				logID        = local.logID,
@@ -164,6 +163,8 @@
 				response     = local.response
 			) />
 		</cfif>
+
+		<cfset local.return = handleResponse(local.response, arguments.url, arguments.getasbinary) />
 
 		<cfreturn local.return />
 	</cffunction>
@@ -179,7 +180,7 @@
 
 		<cfif NOT ListFind('200 OK,201 Created', arguments.response.statusCode) >
 			<cfset local.return.BOXAPIHANDLERSUCCESS = false />
-			<cfdump var="#arguments.response#" /><cfabort />
+			<!--- <cfdump var="#arguments.response#" /><cfabort /> --->
 		<cfelse>
 			<cftry>
 				<cfif returnBinary EQ 'no'>
@@ -191,7 +192,8 @@
 				<cfcatch>
 					<!--- could not JSON Parse response; but it was a 200OK --->
 					<cfset local.return.BOXAPIHANDLERSUCCESS = true />
-					<cfdump var="#cfcatch#" /><cfabort />
+					<cfrethrow />
+					<!--- <cfdump var="#cfcatch#" /><cfabort /> --->
 				</cfcatch>
 			</cftry>
 		</cfif>

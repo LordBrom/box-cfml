@@ -1,6 +1,6 @@
 <!--- Rename this file to "boxAuthentication.cfc" before use. --->
 
-<cfcomponent name="boxAuthentication" output="false" hint="">
+<cfcomponent name="boxAuthentication" output="false" hint="Box application credentials; [Rename this file to ""boxAuthentication"" before use]">
 
 	<!---
 		The private key provided by Box will need to be encrypted to a RSA private token.
@@ -57,9 +57,8 @@
 		<cfreturn local.return />
 	</cffunction>
 
-	<!--- The space before the ID is important for ColdFusion. ex: " ########" --->
 	<cffunction name="getEnterpriseID" access="public" returntype="string" output="false" hint="">
-		<cfset local.return = " 00000000" />
+		<cfset local.return = "00000000" />
 		<cfreturn local.return />
 	</cffunction>
 
