@@ -16,7 +16,7 @@
 	    <cfargument name="fileName" type="string" required="true"             hint="Name of uploaded file." />
 	    <cfargument name="filePath" type="string" required="true"             hint="Path to file to be uploaded." />
 	    <cfargument name="ParentID" type="string" required="true" default="0" hint="BoxID of folder to upload file to." />
-	    <cfargument name="userID"   type="string" required="true"             hint="BoxID of user to perform action oh behalf of." />
+	    <cfargument name="asUserID" type="string" required="true"             hint="BoxID of user to perform action oh behalf of." />
 
 		<cfset local.boxID = "" />
 		<cfset local.jsonBody = structNew() />
@@ -29,7 +29,7 @@
 			method     = "content",
 			jsonBody   = local.jsonBody,
 			httpMethod = "POST",
-			userID     = arguments.userID,
+			userID     = arguments.asUserID,
 			filePath   = arguments.filePath
 		) />
 
@@ -41,14 +41,14 @@
 	</cffunction>
 
 	<cffunction name="getFileInfo" access="public" returntype="any" output="false" hint="">
-	    <cfargument name="fileID" type="string" required="true" hint="BoxID of file to get info of." />
-	    <cfargument name="userID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+	    <cfargument name="fileID"   type="string" required="true" hint="BoxID of file to get info of." />
+	    <cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = "files",
 			objectID   = arguments.fileID,
 			httpMethod = "GET",
-			userID     = arguments.userID
+			userID     = arguments.asUserID
 		) />
 
 		<cfreturn local.apiResponse />
@@ -59,7 +59,7 @@
 		<cfargument name="fileName" type="string" required="false" hint="Name to change the file to." />
 		<cfargument name="parentID" type="string" required="false" hint="BoxID of folder to move the file to." />
 		<cfargument name="tags"     type="array"  required="false" hint="Array of strings. These tags will by applied to the file." />
-		<cfargument name="userID"   type="string" required="true"  hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID"   type="string" required="true"  hint="BoxID of user to perform action oh behalf of." />
 
 		<cfset local.return = structNew() />
 
@@ -80,7 +80,7 @@
 			objectID   = arguments.fileID,
 			httpMethod = "PUT",
 			jsonBody   = local.jsonBody,
-			userID     = arguments.userID
+			userID     = arguments.asUserID
 		) />
 
 		<cfreturn local.apiResponse />
@@ -88,7 +88,7 @@
 
 	<cffunction name="deleteFile" access="public" returntype="any" output="false" hint="">
 		<cfargument name="fileID" type="string" required="true" hint="BoxID of file to delete." />
-		<cfargument name="userID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
 
 		<cfset local.return = structNew() />
 
@@ -96,7 +96,7 @@
 			object     = "files",
 			objectID   = arguments.fileID,
 			httpMethod = "DELETE",
-			userID     = arguments.userID
+			userID     = arguments.asUserID
 		) />
 
 		<cfreturn local.apiResponse />
