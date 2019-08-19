@@ -1,22 +1,24 @@
-<cfcomponent name="boxFileService" output="false" hint="Box service layer for file objects.">
+<cfcomponent name="file" output="false" hint="Box service layer for file objects.">
 
-	<cffunction name="init" returntype="boxFileService" access="public" output="false" hint="Constructor">
+	<cfset this.objectName = "files" />
+
+	<cffunction name="init" returntype="file" access="public" output="false" hint="Constructor">
 		<cfargument name="boxAPIHandler" type="boxAPIHandler" required="false" />
 
 		<cfif structKeyExists(arguments, "boxAPIHandler")>
 			<cfset variables.boxAPIHandler = arguments.boxAPIHandler />
 		<cfelse>
-			<cfset variables.boxAPIHandler = createObject("component", "boxAPIHandler").init(  ) />
+			<cfset variables.boxAPIHandler = createObject("component", "boxAPI.src.boxAPIHandler").init(  ) />
 		</cfif>
 
 		<cfreturn this />
 	</cffunction>
 
 	<cffunction name="uploadFile" access="public" returntype="string" output="false" hint="">
-	    <cfargument name="fileName" type="string" required="true"             hint="Name of uploaded file." />
-	    <cfargument name="filePath" type="string" required="true"             hint="Path to file to be uploaded." />
-	    <cfargument name="ParentID" type="string" required="true" default="0" hint="BoxID of folder to upload file to." />
-	    <cfargument name="asUserID" type="string" required="true"             hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="fileName" type="string" required="true"             hint="Name of uploaded file." />
+		<cfargument name="filePath" type="string" required="true"             hint="Path to file to be uploaded." />
+		<cfargument name="ParentID" type="string" required="true" default="0" hint="BoxID of folder to upload file to." />
+		<cfargument name="asUserID" type="string" required="true"             hint="BoxID of user to perform action oh behalf of." />
 
 		<cfset local.boxID = "" />
 		<cfset local.jsonBody = structNew() />
@@ -25,7 +27,7 @@
 		<cfset local.jsonBody['parent']['id'] = arguments.ParentID />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
-			object     = "files",
+			object     = this.objectName,
 			method     = "content",
 			jsonBody   = local.jsonBody,
 			httpMethod = "POST",
@@ -41,11 +43,11 @@
 	</cffunction>
 
 	<cffunction name="getFileInfo" access="public" returntype="any" output="false" hint="">
-	    <cfargument name="fileID"   type="string" required="true" hint="BoxID of file to get info of." />
-	    <cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="fileID"   type="string" required="true" hint="BoxID of file to get info of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
-			object     = "files",
+			object     = this.objectName,
 			objectID   = arguments.fileID,
 			httpMethod = "GET",
 			userID     = arguments.asUserID
@@ -76,7 +78,7 @@
 		</cfif>
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
-			object     = "files",
+			object     = this.objectName,
 			objectID   = arguments.fileID,
 			httpMethod = "PUT",
 			jsonBody   = local.jsonBody,
@@ -93,7 +95,7 @@
 		<cfset local.return = structNew() />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
-			object     = "files",
+			object     = this.objectName,
 			objectID   = arguments.fileID,
 			httpMethod = "DELETE",
 			userID     = arguments.asUserID

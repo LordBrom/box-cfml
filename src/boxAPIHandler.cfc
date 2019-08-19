@@ -5,10 +5,15 @@
 	<cfset this.boxAPIVersion   = "2.0" />
 
 	<cffunction name="init" returntype="boxAPIHandler" access="public" output="false" hint="Constructor">
+		<cfargument name="boxAPIlogDatasource" type="string" required="true" default="" hint="Datasource to use for logging Box API interactions." />
+		<cfargument name="boxAPIlogTableName"  type="string" required="true" default="" hint="Name to use for the table for logging Box API interactions." />
 
-		<cfset variables.boxAuth      = createObject("component", "boxAuthentication") />
-		<!--- <cfset variables.boxAPILog    = createObject("component", "boxAPILogService").init(request.DSN, "boxApiLog") /> --->
-		<cfset variables.JWT          = createObject("component", "jwtTools.JsonWebTokens") />
+		<cfset variables.boxAuth = createObject("component", "boxAuthentication") />
+		<cfset variables.JWT     = createObject("component", "jwtTools.JsonWebTokens") />
+		<cfif len(arguments.boxAPIlogDatasource) AND len(arguments.boxAPIlogTableName)>
+			<cfset variables.boxAPILog = createObject("component", "boxAPILogHandler").init(arguments.boxAPIlogDatasource, arguments.boxAPIlogTableName) />
+		</cfif>
+
 		<cfset variables.access_token = "" />
 		<cfset variables.expires_in   = "" />
 		<cfset variables.issued_at    = "" />
@@ -127,9 +132,9 @@
 		<cfset local.auth = send(
 			url        = local.url,
 			method     = "POST",
-            httpParams = local.httpParams,
-            logCall    = false
-        ) />
+			httpParams = local.httpParams,
+			logCall    = false
+		) />
 
 		<cfreturn local.auth />
 	</cffunction>
@@ -180,7 +185,7 @@
 
 		<cfif NOT ListFind('200 OK,201 Created', arguments.response.statusCode) >
 			<cfset local.return.BOXAPIHANDLERSUCCESS = false />
-			<!--- <cfdump var="#arguments.response#" /><cfabort /> --->
+			<cfdump var="#arguments.response#" /><cfabort />
 		<cfelse>
 			<cftry>
 				<cfif returnBinary EQ 'no'>
@@ -192,8 +197,8 @@
 				<cfcatch>
 					<!--- could not JSON Parse response; but it was a 200OK --->
 					<cfset local.return.BOXAPIHANDLERSUCCESS = true />
-					<cfrethrow />
-					<!--- <cfdump var="#cfcatch#" /><cfabort /> --->
+					<!--- <cfrethrow /> --->
+					<cfdump var="#cfcatch#" /><cfabort />
 				</cfcatch>
 			</cftry>
 		</cfif>

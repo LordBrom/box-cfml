@@ -1,18 +1,20 @@
-<cfcomponent name="boxFolderService" output="false" hint="Box service layer for folder objects.">
+<cfcomponent name="folder" output="false" hint="Box service layer for folder objects.">
 
-	<cffunction name="init" returntype="boxFolderService" access="public" output="false" hint="Constructor">
+	<cfset this.objectName = "folders" />
+
+	<cffunction name="init" returntype="folder" access="public" output="false" hint="Constructor">
 		<cfargument name="boxAPIHandler" type="boxAPIHandler" required="false" />
 
 		<cfif structKeyExists(arguments, "boxAPIHandler")>
 			<cfset variables.boxAPIHandler = arguments.boxAPIHandler />
 		<cfelse>
-			<cfset variables.boxAPIHandler = createObject("component", "boxAPIHandler").init(  ) />
+			<cfset variables.boxAPIHandler = createObject("component", "boxAPI.src.boxAPIHandler").init(  ) />
 		</cfif>
 
 		<cfreturn this />
 	</cffunction>
 
-	<cffunction name="createFolder" access="public" returntype="string" output="false" hint="">
+	<cffunction name="createFolder" access="public" returntype="any" output="false" hint="">
 		<cfargument name="folderName" type="string" required="true"             hint="Name of the newly created folder." />
 		<cfargument name="ParentID"   type="string" required="true" default="0" hint="BoxID of folder new folder will be created in." />
 		<cfargument name="asUserID"     type="string" required="true"             hint="BoxID of user to perform action oh behalf of." />
@@ -24,7 +26,7 @@
 		<cfset local.jsonBody['parent']['id'] = arguments.ParentID />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
-			object     = "folders",
+			object     = this.objectName,
 			jsonBody   = local.jsonBody,
 			httpMethod = "POST",
 			userID     = arguments.asUserID
@@ -34,7 +36,7 @@
 			<cfset local.boxID = local.apiResponse.id />
 		</cfif>
 
-		<cfreturn local.boxID />
+		<cfreturn local.apiResponse />
 	</cffunction>
 
 	<cffunction name="copyFolder" access="public" returntype="string" output="false" hint="">
@@ -50,7 +52,7 @@
 		<cfset local.jsonBody['parent']['id'] = arguments.ParentID />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
-			object     = "folders",
+			object     = this.objectName,
 			objectID   = SourceID,
 			method     = "copy",
 			jsonBody   = local.jsonBody,
@@ -72,7 +74,7 @@
 		<cfset local.return = structNew() />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
-			object     = "folders",
+			object     = this.objectName,
 			objectID   = arguments.folderID,
 			method     = "items",
 			httpMethod = "GET",
@@ -84,20 +86,20 @@
 
 	<cffunction name="getFolderInfo" access="public" returntype="any" output="false" hint="">
 		<cfargument name="folderID" type="string" required="true" default="0" hint="BoxID of folder to get info of." />
-		<cfargument name="asUserID"   type="string" required="true"             hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string" required="true"             hint="BoxID of user to perform action oh behalf of." />
 
 		<cfset local.return = structNew() />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
-			object     = "folders",
+			object     = this.objectName,
 			objectID   = arguments.folderID,
 			httpMethod = "GET",
 			userID     = arguments.asUserID
 		) />
 
-		<cfset local.boxFolder = createObject("component", "objects.boxFolder").init(local.apiResponse) />
+		<!--- <cfset local.boxFolder = createObject("component", "objects.boxFolder").init(local.apiResponse) /> --->
 
-		<cfreturn local.boxFolder />
+		<cfreturn local.apiResponse />
 	</cffunction>
 
 	<cffunction name="updateFolder" access="public" returntype="any" output="false" hint="">
@@ -122,7 +124,7 @@
 		</cfif>
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
-			object     = "folders",
+			object     = this.objectName,
 			objectID   = arguments.folderID,
 			httpMethod = "PUT",
 			jsonBody   = local.jsonBody,
@@ -139,7 +141,7 @@
 		<cfset local.return = structNew() />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
-			object      = "folders",
+			object      = this.objectName,
 			objectID    = arguments.folderID,
 			queryParams = "recursive=true",
 			httpMethod  = "DELETE",

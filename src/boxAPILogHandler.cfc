@@ -1,6 +1,6 @@
-<cfcomponent name="boxAPILogService" output="false" hint="Submits api log information to the database">
+<cfcomponent name="boxAPILogHandler" output="false" hint="Submits api log information to the database">
 
-	<cffunction name="init" returntype="boxAPILogService" access="public" output="false" hint="Constructor">
+	<cffunction name="init" returntype="boxAPILogHandler" access="public" output="false" hint="Constructor">
 		<cfargument name="datasource"  type="string"  required="true" default=""      hint="" />
 		<cfargument name="tableName"   type="string"  required="true" default=""      hint="" />
 		<cfargument name="createTable" type="boolean" required="true" default="false" hint="" />
@@ -54,16 +54,16 @@
 					<cfset extraInfoStruct.variables  = variables />
 
 					<cfset application.bugTracker.notifyService(
-					   message      = "Error logging API interaction to [#variables.tableName#] on #cgi.server_name#",
-					   exception    = exceptionStruct,
-					   ExtraInfo    = extraInfoStruct,
-					   severityCode = "error"
+						message      = "Error logging API interaction to [#variables.tableName#] on #cgi.server_name#",
+						exception    = exceptionStruct,
+						ExtraInfo    = extraInfoStruct,
+						severityCode = "error"
 					) />
 				<cfelse>
 					<cfrethrow />
 				</cfif>
-	        </cfcatch>
-        </cftry>
+			</cfcatch>
+		</cftry>
 
 		<cfreturn local.return />
 	</cffunction>
@@ -78,15 +78,15 @@
 				UPDATE [#variables.tableName#]
 				SET
 
-			    	<cfif structKeyExists(arguments, "responseCode")>
-			    		responseCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.responseCode#" />,
-			    	</cfif>
-			    	<cfif structKeyExists(arguments, "response")>
-			    		response = <cfqueryparam cfsqltype="cf_sql_varchar" value="#serializeJSON(arguments.response)#" />,
-			    	</cfif>
-			    	datetimeReceived=getDate()
-			    WHERE
-			    	boxApiLogID = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.logID#" />
+					<cfif structKeyExists(arguments, "responseCode")>
+						responseCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.responseCode#" />,
+					</cfif>
+					<cfif structKeyExists(arguments, "response")>
+						response = <cfqueryparam cfsqltype="cf_sql_varchar" value="#serializeJSON(arguments.response)#" />,
+					</cfif>
+					datetimeReceived=getDate()
+				WHERE
+					boxApiLogID = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.logID#" />
 
 			</cfquery>
 
@@ -108,8 +108,8 @@
 				<cfelse>
 					<cfrethrow />
 				</cfif>
-	        </cfcatch>
-        </cftry>
+			</cfcatch>
+		</cftry>
 
 		<cfreturn />
 	</cffunction>
@@ -120,8 +120,8 @@
 			<!--- Update log event with response --->
 			<cfquery datasource="#variables.datasource#" result="local.update">
 				DELETE FROM [#variables.tableName#]
-			    WHERE
-			    	boxApiLogID = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.logID#" />
+				WHERE
+					boxApiLogID = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.logID#" />
 			</cfquery>
 
 			<cfcatch>
@@ -142,8 +142,8 @@
 				<cfelse>
 					<cfrethrow />
 				</cfif>
-	        </cfcatch>
-        </cftry>
+			</cfcatch>
+		</cftry>
 
 		<cfreturn />
 	</cffunction>
@@ -191,8 +191,8 @@
 				<cfelse>
 					<cfrethrow />
 				</cfif>
-	        </cfcatch>
-        </cftry>
+			</cfcatch>
+		</cftry>
 
 		<cfreturn />
 	</cffunction>
