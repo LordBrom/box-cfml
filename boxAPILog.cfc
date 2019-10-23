@@ -37,7 +37,7 @@
 					<cfqueryparam cfsqltype="cf_sql_varchar"   value="#arguments.url#" />,
 					<cfqueryparam cfsqltype="cf_sql_varchar"   value="#arguments.method#" />,
 					<cfqueryparam cfsqltype="cf_sql_bit"       value="#arguments.getasbinary#" />,
-					<cfqueryparam cfsqltype="cf_sql_varchar"   value="#SerializeJSON(arguments.httpParams)#" />,
+					<cfqueryparam cfsqltype="cf_sql_varchar"   value="#reReplace(SerializeJSON(arguments.httpParams), 'Bearer ([^".]*)"', 'Bearer <access_token>"')#" />,
 					<cfqueryparam cfsqltype="cf_sql_timestamp" value="#now()#" />
 				)
 			</cfquery>
