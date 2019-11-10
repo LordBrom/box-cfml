@@ -9,7 +9,7 @@
 		<cfset variables.tableName  = arguments.tableName />
 
 		<cfif arguments.createTable>
-			<cfset createLogDable() />
+			<cfset createLogTable() />
 		</cfif>
 
 		<cfreturn this />
@@ -34,11 +34,11 @@
 					datetimeSent
 				)
 				VALUES (
-					<cfqueryparam cfsqltype="cf_sql_varchar"   value="#arguments.url#" />,
-					<cfqueryparam cfsqltype="cf_sql_varchar"   value="#arguments.method#" />,
-					<cfqueryparam cfsqltype="cf_sql_bit"       value="#arguments.getasbinary#" />,
-					<cfqueryparam cfsqltype="cf_sql_varchar"   value="#reReplace(SerializeJSON(arguments.httpParams), 'Bearer ([^".]*)"', 'Bearer <access_token>"')#" />,
-					<cfqueryparam cfsqltype="cf_sql_timestamp" value="#now()#" />
+					<cfqueryparam cfsqltype="CF_SQL_VARCHAR"   value="#arguments.url#" />,
+					<cfqueryparam cfsqltype="CF_SQL_VARCHAR"   value="#arguments.method#" />,
+					<cfqueryparam cfsqltype="CF_SQL_BIT"       value="#arguments.getasbinary#" />,
+					<cfqueryparam cfsqltype="CF_SQL_VARCHAR"   value="#reReplace(SerializeJSON(arguments.httpParams), 'Bearer ([^".]*)"', 'Bearer <access_token>"')#" />,
+					<cfqueryparam cfsqltype="CF_SQL_TIMESTAMP" value="#now()#" />
 				)
 			</cfquery>
 			<cfset local.return = local.ins.generatedKey />
@@ -68,7 +68,7 @@
 		<cfreturn local.return />
 	</cffunction>
 
-	<cffunction name="updateLog" access="public" returntype="void" hint="Sets a log">
+	<cffunction name="updateLog" access="public" returntype="void" hint="Updates a log with response data.">
 		<cfargument name="logID"        required="true"  type="numeric" hint="ID" />
 		<cfargument name="responseCode" required="false" type="string"  hint="response statuscode (200 OK,401 message, etc)" />
 		<cfargument name="response"     required="false" type="any"     hint="the API's full cfhttp response" />
@@ -79,14 +79,14 @@
 				SET
 
 					<cfif structKeyExists(arguments, "responseCode")>
-						responseCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.responseCode#" />,
+						responseCode = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.responseCode#" />,
 					</cfif>
 					<cfif structKeyExists(arguments, "response")>
-						response = <cfqueryparam cfsqltype="cf_sql_varchar" value="#serializeJSON(arguments.response)#" />,
+						response = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#serializeJSON(arguments.response)#" />,
 					</cfif>
 					datetimeReceived=getDate()
 				WHERE
-					boxApiLogID = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.logID#" />
+					boxApiLogID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#arguments.logID#" />
 
 			</cfquery>
 
@@ -114,14 +114,14 @@
 		<cfreturn />
 	</cffunction>
 
-	<cffunction name="hardDeleteLog" access="public" returntype="void" hint="Sets a log">
+	<cffunction name="hardDeleteLog" access="public" returntype="void" hint="Deletes a log.">
 		<cfargument name="logID" required="true" type="numeric"    hint="ID" />
 		<cftry>
 			<!--- Update log event with response --->
 			<cfquery datasource="#variables.datasource#" result="local.update">
 				DELETE FROM [#variables.tableName#]
 				WHERE
-					boxApiLogID = <cfqueryparam cfsqltype="cf_sql_integer" value="#arguments.logID#" />
+					boxApiLogID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#arguments.logID#" />
 			</cfquery>
 
 			<cfcatch>
@@ -148,7 +148,7 @@
 		<cfreturn />
 	</cffunction>
 
-	<cffunction name="createLogDable" access="public" returntype="void" hint="Sets a log">
+	<cffunction name="createLogTable" access="public" returntype="void" hint="Creates the log database table, if it doesn't already exist.">
 		<cftry>
 			<!--- Update log event with response --->
 			<cfquery datasource="#variables.datasource#" result="local.update">
@@ -173,7 +173,6 @@
 			</cfquery>
 
 			<cfcatch>
-				<cfdump var="#cfcatch#" /><cfabort />
 				<cfif structKeyExists(application,'bugTracker')>
 					<cfset exceptionStruct = cfcatch />
 					<cfset extraInfoStruct = structNew() />
@@ -196,5 +195,4 @@
 
 		<cfreturn />
 	</cffunction>
-
 </cfcomponent>

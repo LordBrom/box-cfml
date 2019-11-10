@@ -1,21 +1,17 @@
 <cfcomponent name="user" output="false" hint="Box service layer for folder objects.">
 
-	<cfset this.objectName = "uesrs" />
+	<cfset this.objectName = "users" />
 
 	<cffunction name="init" returntype="user" access="public" output="false" hint="Constructor">
 		<cfargument name="boxAPIHandler" type="boxAPIHandler" required="false" />
 
-		<cfif structKeyExists(arguments, "boxAPIHandler")>
-			<cfset variables.boxAPIHandler = arguments.boxAPIHandler />
-		<cfelse>
-			<cfset variables.boxAPIHandler = createObject("component", "boxAPI.src.boxAPIHandler").init(  ) />
-		</cfif>
+		<cfset variables.boxAPIHandler = arguments?.boxAPIHandler ?: createObject("component", "boxAPI.src.boxAPIHandler").init(  ) />
 
 		<cfreturn this />
 	</cffunction>
 
-	<cffunction name="getUserInfo" access="public" returntype="any" output="false" hint="">
-		<cfargument name="userID" type="string" required="true" hint="BoxID of user to get info of." />
+	<cffunction name="getInfo" access="public" returntype="any" output="false" hint="">
+		<cfargument name="userID"   type="string" required="true" hint="BoxID of user to get info of." />
 		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(

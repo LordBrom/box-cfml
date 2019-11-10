@@ -1,48 +1,18 @@
-component
-	output = false
-	hint = "I encode and decode values using JavaScript Object Notation (JSON)."
-	{
+<cfcomponent name="JsonEncoder" output="false" hint="I encode and decode values using JavaScript Object Notation (JSON).">
 
-	/**
-	* I initialize the JSON encoder.
-	* 
-	* @output false 
-	*/
-	public any function init() {
+	<cffunction name="init" access="public" returntype="any" output="false" hint="I initialize the JSON encoder.">
+		<cfreturn this />
+	</cffunction>
 
-		return( this );
+	<cffunction name="decode" access="public" returntype="any" output="false" hint="I decode the given JSON-encoded value and return the original input.">
+		<cfargument name="input"  type="string" required="true" hint="I am the encoded input that needs to be decoded." />
 
-	}
+		<cfreturn( deserializeJson( arguments.input ) ) />
+	</cffunction>
 
+	<cffunction name="encode" access="public" returntype="any" output="false" hint="I encode the given value using JavaScript Object Notation.">
+		<cfargument name="input"  type="any" required="true" hint="I am the data structure that needs to be encoded." />
 
-	// ---
-	// PUBLIC METHODS.
-	// ---
-
-
-	/**
-	* I decode the given JSON-encoded value and return the original input.
-	* 
-	* @input I am the encoded input that needs to be decoded.
-	* @output false
-	*/
-	public any function decode( required string input ) {
-
-		return( deserializeJson( input ) );
-
-	}
-
-
-	/**
-	* I encode the given value using JavaScript Object Notation.
-	* 
-	* @input I am the data structure that needs to be encoded.
-	* @output false
-	*/
-	public string function encode( required any input ) {
-
-		return( serializeJson( input ) );
-
-	}
-
-}
+		<cfreturn( serializeJson( arguments.input ) ) />
+	</cffunction>
+</cfcomponent>

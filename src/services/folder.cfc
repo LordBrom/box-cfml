@@ -5,21 +5,16 @@
 	<cffunction name="init" returntype="folder" access="public" output="false" hint="Constructor">
 		<cfargument name="boxAPIHandler" type="boxAPIHandler" required="false" />
 
-		<cfif structKeyExists(arguments, "boxAPIHandler")>
-			<cfset variables.boxAPIHandler = arguments.boxAPIHandler />
-		<cfelse>
-			<cfset variables.boxAPIHandler = createObject("component", "boxAPI.src.boxAPIHandler").init(  ) />
-		</cfif>
+		<cfset variables.boxAPIHandler = arguments?.boxAPIHandler ?: createObject("component", "boxAPI.src.boxAPIHandler").init(  ) />
 
 		<cfreturn this />
 	</cffunction>
 
-	<cffunction name="createFolder" access="public" returntype="any" output="false" hint="">
-		<cfargument name="folderName" type="string" required="true"             hint="Name of the newly created folder." />
-		<cfargument name="ParentID"   type="string" required="true" default="0" hint="BoxID of folder new folder will be created in." />
-		<cfargument name="asUserID"     type="string" required="true"             hint="BoxID of user to perform action oh behalf of." />
+	<cffunction name="create" access="public" returntype="any" output="false" hint="">
+		<cfargument name="folderName" type="string" required="true" hint="Name of the newly created folder." />
+		<cfargument name="ParentID"   type="string" required="true" hint="BoxID of folder new folder will be created in." />
+		<cfargument name="asUserID"   type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
 
-		<cfset local.boxID = "" />
 		<cfset local.jsonBody = structNew() />
 		<cfset local.jsonBody['name']   = arguments.folderName />
 		<cfset local.jsonBody['parent'] = structNew() />
@@ -32,20 +27,15 @@
 			userID     = arguments.asUserID
 		) />
 
-		<cfif structKeyExists(local.apiResponse, "BOXAPIHANDLERSUCCESS") and local.apiResponse.BOXAPIHANDLERSUCCESS>
-			<cfset local.boxID = local.apiResponse.id />
-		</cfif>
-
 		<cfreturn local.apiResponse />
 	</cffunction>
 
-	<cffunction name="copyFolder" access="public" returntype="string" output="false" hint="">
-		<cfargument name="folderName" type="string" required="true"             hint="Name of the newly created folder." />
-		<cfargument name="ParentID"   type="string" required="true"             hint="BoxID of folder new folder will be created in." />
-		<cfargument name="SourceID"   type="string" required="true" default="0" hint="BoxID of folder to be copied." />
-		<cfargument name="asUserID"     type="string" required="true"             hint="BoxID of user to perform action oh behalf of." />
+	<cffunction name="copy" access="public" returntype="struct" output="false" hint="">
+		<cfargument name="folderName" type="string" required="true" hint="Name of the newly created folder." />
+		<cfargument name="ParentID"   type="string" required="true" hint="BoxID of folder new folder will be created in." />
+		<cfargument name="SourceID"   type="string" required="true" hint="BoxID of folder to be copied." />
+		<cfargument name="asUserID"   type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
 
-		<cfset local.boxID = "" />
 		<cfset local.jsonBody = structNew() />
 		<cfset local.jsonBody['name']   = arguments.folderName />
 		<cfset local.jsonBody['parent'] = structNew() />
@@ -60,18 +50,12 @@
 			userID     = arguments.asUserID
 		) />
 
-		<cfif structKeyExists(local.apiResponse, "BOXAPIHANDLERSUCCESS") and local.apiResponse.BOXAPIHANDLERSUCCESS>
-			<cfset local.boxID = local.apiResponse.id />
-		</cfif>
-
-		<cfreturn local.boxID />
+		<cfreturn local.apiResponse />
 	</cffunction>
 
-	<cffunction name="getFolderContents" access="public" returntype="any" output="false" hint="">
-		<cfargument name="folderID" type="string" required="true" default="0" hint="BoxID of folder to get contents of." />
-		<cfargument name="asUserID"   type="string" required="true"             hint="BoxID of user to perform action oh behalf of." />
-
-		<cfset local.return = structNew() />
+	<cffunction name="getContents" access="public" returntype="any" output="false" hint="">
+		<cfargument name="folderID" type="string" required="true" hint="BoxID of folder to get contents of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
@@ -84,11 +68,9 @@
 		<cfreturn local.apiResponse />
 	</cffunction>
 
-	<cffunction name="getFolderInfo" access="public" returntype="any" output="false" hint="">
-		<cfargument name="folderID" type="string" required="true" default="0" hint="BoxID of folder to get info of." />
-		<cfargument name="asUserID" type="string" required="true"             hint="BoxID of user to perform action oh behalf of." />
-
-		<cfset local.return = structNew() />
+	<cffunction name="getInfo" access="public" returntype="any" output="false" hint="">
+		<cfargument name="folderID" type="string" required="true" hint="BoxID of folder to get info of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
@@ -102,14 +84,12 @@
 		<cfreturn local.apiResponse />
 	</cffunction>
 
-	<cffunction name="updateFolder" access="public" returntype="any" output="false" hint="">
+	<cffunction name="update" access="public" returntype="any" output="false" hint="">
 		<cfargument name="folderID"   type="string" required="true"  hint="BoxID of folder to update." />
 		<cfargument name="folderName" type="string" required="false" hint="Name to change the folder to." />
 		<cfargument name="parentID"   type="string" required="false" hint="BoxID of folder to move the folder to." />
 		<cfargument name="tags"       type="array"  required="false" hint="Array of strings. These tags will by applied to the folder." />
-		<cfargument name="asUserID"     type="string" required="true"  hint="BoxID of user to perform action oh behalf of." />
-
-		<cfset local.return = structNew() />
+		<cfargument name="asUserID"   type="string" required="true"  hint="BoxID of user to perform action oh behalf of." />
 
 		<cfset local.jsonBody = structNew() />
 		<cfif structKeyExists(arguments, "folderName") and len(arguments.folderName)>
@@ -134,11 +114,9 @@
 		<cfreturn local.apiResponse />
 	</cffunction>
 
-	<cffunction name="deleteFolder" access="public" returntype="any" output="false" hint="">
+	<cffunction name="delete" access="public" returntype="any" output="false" hint="">
 		<cfargument name="folderID" type="string" required="true" hint="BoxID of folder to delete." />
-		<cfargument name="asUserID"   type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
-
-		<cfset local.return = structNew() />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object      = this.objectName,
@@ -151,4 +129,18 @@
 		<cfreturn local.apiResponse />
 	</cffunction>
 
+	<cffunction name="getCollaborations" access="public" returntype="any" output="false" hint="">
+		<cfargument name="folderID" type="string" required="true" hint="BoxID of folder to delete." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+
+		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
+			object     = this.objectName,
+			objectID   = arguments.folderID,
+			method     = "collaborations",
+			httpMethod = "GET",
+			userID     = arguments.asUserID
+		) />
+
+		<cfreturn local.apiResponse />
+	</cffunction>
 </cfcomponent>

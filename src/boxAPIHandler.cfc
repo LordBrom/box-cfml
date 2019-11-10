@@ -22,15 +22,16 @@
 	</cffunction>
 
 	<cffunction name="makeRequest"      returntype="any"    access="public" output="false" hint="">
-		<cfargument name="object"      type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; Object to affect (files|folders)                           " />
-		<cfargument name="objectID"    type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; BoxID of object being affected                             " />
-		<cfargument name="method"      type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; Action to be taken on the object.                          " />
+		<cfargument name="object"      type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; Object to affect ex. [files],[folders],[users]..." />
+		<cfargument name="objectID"    type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; BoxID of object being affected. " />
+		<cfargument name="method"      type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; Action to be taken on the object. " />
 		<cfargument name="queryParams" type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; Additional url parameters. " />
 		<cfargument name="jsonBody"    type="struct"  required="true" default="#structNew()#" hint="Parameters to be passed as http body, or formfield for file upload." />
 		<cfargument name="httpMethod"  type="string"  required="true" default="POST"          hint="cfhttp request method. GET,POST,PUT,DELETE,HEAD,TRACE,OPTIONS,PATCH" />
 		<cfargument name="userID"      type="string"  required="true" default=""              hint="Box user ID of who the action is being taken on behalf of" />
 		<cfargument name="filePath"    type="string"  required="true" default=""              hint="Path to a file to be uploaded" />
 		<cfargument name="getasbinary" type="string"  required="true" default="no"            hint="If true, cfhttp request returns binary." />
+		<cfargument name="debug"       type="boolean" required="true" default="false"         hint="" />
 
 		<cfset local.return = structNew() />
 		<cfset local.httpParams = arrayNew(1) />
@@ -45,10 +46,21 @@
 			<cfset arrayAppend(local.httpParams, { "type": "Header", "name": "As-User", "value": arguments.userID }) />
 		</cfif>
 
-		<cfif arguments.object EQ "files" AND method EQ "content" AND httpMethod EQ "POST" AND len(arguments.filePath)>
+		<cfif arguments.object EQ "files/upload_sessions" AND arguments.httpMethod NEQ 'GET'>
+			<cfset local.url = this.boxAPIUploadURL & this.boxAPIVersion & "/" & arguments.object & "/" />
+			<cfset arrayAppend(local.httpParams, { "type": "formfield",   "name": "attributes", "value": SerializeJSON(arguments.jsonBody) }) />
+			<cfset arrayAppend(local.httpParams, { "type": "file",   "name": "file", "file": arguments.filePath }) />
+
+		<cfelseif arguments.object EQ "files" AND arguments.method EQ "content" AND httpMethod EQ "POST" AND len(arguments.filePath)>
 			<cfset local.url = this.boxAPIUploadURL & this.boxAPIVersion & "/" & arguments.object & "/" />
 			<cfset arrayAppend(local.httpParams, { "type": "formfield", "name": "attributes", "value": SerializeJSON(arguments.jsonBody) }) />
 			<cfset arrayAppend(local.httpParams, { "type": "file",      "name": "file",       "file": arguments.filePath }) />
+
+		<cfelseif arguments.object EQ "files" AND arguments.method EQ "content" AND httpMethod EQ "OPTIONS">
+			<cfset local.url = this.boxAPIURL & this.boxAPIVersion & "/" & arguments.object & "/" />
+			<cfset arrayAppend(local.httpParams, { "type": "Header", "name": "Content-Type", "value": "multipart/form-data" }) />
+			<cfset arrayAppend(local.httpParams, { "type": "formfield", "name": "attributes", "value": SerializeJSON(arguments.jsonBody) }) />
+
 		<cfelse>
 			<cfset local.url = this.boxAPIURL & this.boxAPIVersion & "/" & arguments.object & "/" />
 			<cfset arrayAppend(local.httpParams, { "type": "Header", "name": "Content-Type", "value": "application/json" }) />
@@ -73,7 +85,8 @@
 			url         = local.url,
 			method      = arguments.httpMethod,
 			getasbinary = arguments.getasbinary,
-			httpParams  = local.httpParams
+			httpParams  = local.httpParams,
+			debug       = arguments.debug
 		) />
 	</cffunction>
 
@@ -142,24 +155,52 @@
 	<cffunction name="send"             returnType="struct" access="private" output="false" hint="send request to REST API">
 		<cfargument name="url"         type="string"  required="true" />
 		<cfargument name="method"      type="string"  required="true" />
-		<cfargument name="getasbinary" type="boolean" required="true" default="no"   />
-		<cfargument name="httpParams"  type="array"   required="true" default="no"   />
-		<cfargument name="logCall"     type="boolean" required="true" default="true" />
+		<cfargument name="getasbinary" type="boolean" required="true" default="no"    />
+		<cfargument name="httpParams"  type="array"   required="true" default="no"    />
+		<cfargument name="logCall"     type="boolean" required="true" default="true"  />
+		<cfargument name="debug"       type="boolean" required="true" default="false" />
 
 		<cfset local.logID = 0 />
 		<cfif structKeyExists(variables, "boxAPILog") AND arguments.logCall>
 			<cfset local.logID = variables.boxAPILog.setLog( argumentCollection = arguments ) />
 		</cfif>
 
-		<cfhttp url="#arguments.url#" method="#arguments.method#" throwonerror="false" result="local.response" getasbinary="#arguments.getasbinary#">
-			<cfloop array="#arguments.httpParams#" index="local.idx" item="local.itm">
-				<cfif structKeyExists(local.itm, "value")>
-					<cfhttpparam type="#local.itm.type#" name="#local.itm.name#" value="#local.itm.value#" />
-				<cfelseif structKeyExists(local.itm, "file")>
-					<cfhttpparam type="#local.itm.type#" name="#local.itm.name#" file="#local.itm.file#" />
+		<cfif arguments.debug>
+			<cfdump var="#arguments#" />
+			<!--- <cfabort /> --->
+		</cfif>
+
+		<cftry>
+
+			<cfhttp url="#arguments.url#" method="#arguments.method#" throwonerror="false" result="local.response" getasbinary="#arguments.getasbinary#">
+				<cfloop array="#arguments.httpParams#" index="local.idx" item="local.itm">
+					<cfif structKeyExists(local.itm, "value")>
+						<cfhttpparam type="#local.itm.type#" name="#local.itm.name#" value="#local.itm.value#" />
+					<cfelseif structKeyExists(local.itm, "file")>
+						<cfhttpparam type="#local.itm.type#" name="#local.itm.name#" file="#local.itm.file#" />
+					</cfif>
+				</cfloop>
+			</cfhttp>
+
+			<cfcatch type="any">
+				<cfif structKeyExists(application,'bugTracker')>
+					<cfset exceptionStruct = cfcatch />
+					<cfset extraInfoStruct = structNew() />
+					<cfset extraInfoStruct._callStack = CallStackGet() />
+					<cfset extraInfoStruct.variables  = variables />
+					<cfset extraInfoStruct.arguments  = arguments />
+					<cfset extraInfoStruct.local      = local />
+
+					<cfset application.bugTracker.notifyService(
+						message      = "Box API failed to send.",
+						exception    = exceptionStruct,
+						ExtraInfo    = extraInfoStruct,
+						severityCode = "error"
+					) />
 				</cfif>
-			</cfloop>
-		</cfhttp>
+				<cfrethrow />
+			</cfcatch>
+		</cftry>
 
 		<cfif local.logID>
 			<cfset variables.boxAPILog.updateLog(
@@ -167,6 +208,9 @@
 				responseCode = local.response.statusCode,
 				response     = local.response
 			) />
+		</cfif>
+		<cfif arguments.debug>
+			<cfdump var="#local.response#" /><cfabort />
 		</cfif>
 
 		<cfset local.return = handleResponse(local.response, arguments.url, arguments.getasbinary) />
@@ -180,25 +224,63 @@
 		<cfargument name="returnBinary" type="string" required="false" default="no" />
 		<cfset local.return = structNew() />
 
-		<cfset local.return.BOXAPIHANDLERSUCCESS = false />
-		<cfset local.return.BOXAPIHANDLERSTATUSCODE = arguments.response.statusCode />
+		<cfset local.return.success = false />
+		<cfset local.return.statusCode = arguments.response.statusCode />
 
-		<cfif NOT ListFind('200 OK,201 Created', arguments.response.statusCode) >
-			<cfset local.return.BOXAPIHANDLERSUCCESS = false />
-			<cfdump var="#arguments.response#" /><cfabort />
+		<!---
+			200 OK
+			201 Created
+			204 No Content
+		 --->
+		<cfif val(arguments.response.statusCode) EQ 409 >
+			<cfif returnBinary EQ 'no' AND len(arguments.response.fileContent)>
+					<cfset structAppend(local.return, deserializeJSON(arguments.response.fileContent)) />
+			<cfelse>
+				<cfset local.return.content = arguments.response.fileContent />
+			</cfif>
+		<cfelseif NOT ListFind('200,201,204', val(arguments.response.statusCode)) >
+			<cfif structKeyExists(application,'bugTracker')>
+				<cfset exceptionStruct = structNew() />
+				<cfset extraInfoStruct = structNew() />
+				<cfset extraInfoStruct._callStack = CallStackGet() />
+				<cfset extraInfoStruct.variables  = variables />
+				<cfset extraInfoStruct.arguments  = arguments />
+				<cfset extraInfoStruct.local      = local />
+
+				<cfset application.bugTracker.notifyService(
+					message      = "Box API returned unsuccessful: #arguments.response.statusCode#",
+					exception    = exceptionStruct,
+					ExtraInfo    = extraInfoStruct,
+					severityCode = "warning"
+				) />
+			</cfif>
 		<cfelse>
 			<cftry>
-				<cfif returnBinary EQ 'no'>
-					<cfset local.return = deserializeJSON(arguments.response.fileContent) />
+				<cfif returnBinary EQ 'no' AND len(arguments.response.fileContent)>
+					<cfset structAppend(local.return, deserializeJSON(arguments.response.fileContent)) />
 				<cfelse>
 					<cfset local.return.content = arguments.response.fileContent />
 				</cfif>
-				<cfset local.return.BOXAPIHANDLERSUCCESS = true />
+				<cfset local.return.success = true />
 				<cfcatch>
 					<!--- could not JSON Parse response; but it was a 200OK --->
-					<cfset local.return.BOXAPIHANDLERSUCCESS = true />
-					<!--- <cfrethrow /> --->
-					<cfdump var="#cfcatch#" /><cfabort />
+					<cfset local.return.success = true />
+					<cfif structKeyExists(application,'bugTracker')>
+						<cfset exceptionStruct = cfcatch />
+						<cfset extraInfoStruct = structNew() />
+						<cfset extraInfoStruct._callStack = CallStackGet() />
+						<cfset extraInfoStruct.variables  = variables />
+						<cfset extraInfoStruct.arguments  = arguments />
+						<cfset extraInfoStruct.local      = local />
+
+						<cfset application.bugTracker.notifyService(
+							message      = "Box API failed to handle successful response.",
+							exception    = exceptionStruct,
+							ExtraInfo    = extraInfoStruct,
+							severityCode = "warning"
+						) />
+					</cfif>
+					<cfrethrow />
 				</cfcatch>
 			</cftry>
 		</cfif>
