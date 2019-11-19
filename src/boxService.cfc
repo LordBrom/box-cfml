@@ -9,7 +9,6 @@
 	<cfproperty name="collaborationService" type="collaboration" />
 	<cfproperty name="uploadSessionService" type="uploadSession" />
 
-
 	<cffunction name="init" returntype="boxService" access="public" output="false" hint="Constructor">
 		<cfargument name="defaultUserID" type="string" required="true" default="#getUserID()#" hint="The user to be used if no user is passed in." />
 
@@ -73,7 +72,7 @@
 		 	<cfdump var="#local.result#" /><cfabort />
 		</cfif>
 
-		<cfif arguments.returnIDOnly AND structKeyExists(local.result, "BOXAPIHANDLERSUCCESS") and local.result.BOXAPIHANDLERSUCCESS>
+		<cfif arguments.returnIDOnly AND structKeyExists(local.result, "success") and local.result.success>
 			<cfreturn local.result.entries[1].id />
 		</cfif>
 
