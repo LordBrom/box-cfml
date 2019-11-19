@@ -1,1 +1,3 @@
-/boxAuthentication.cfc
+/src/boxAuthentication.cfc
+doc
+/src/boxObjectID.cfc
