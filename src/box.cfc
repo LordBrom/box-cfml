@@ -1,4 +1,4 @@
-<cfcomponent name="boxService" output="false" accessors="true" hint="Box service layer.">
+<cfcomponent name="box" output="false" accessors="true" hint="Box service layer.">
 
 	<cfproperty name="defaultUserID"        type="string"        />
 
@@ -9,8 +9,8 @@
 	<cfproperty name="collaborationService" type="collaboration" />
 	<cfproperty name="uploadSessionService" type="uploadSession" />
 
-	<cffunction name="init" returntype="boxService" access="public" output="false" hint="Constructor">
-		<cfargument name="defaultUserID" type="string" required="true" default="#getUserID()#" hint="The user to be used if no user is passed in." />
+	<cffunction name="init" returntype="box" access="public" output="false" hint="Constructor">
+		<cfargument name="defaultUserID" type="string" required="true" default="" hint="The user to be used if no user is passed in." />
 
 		<cfset setDefaultUserID( arguments.defaultUserID ) />
 
@@ -48,7 +48,7 @@
 	  --------------------------------FILES--------------------------------
 	  --------------------------------------------------------------------->
 
-	<cffunction name="uploadFile"            access="public" returntype="any" output="false" hint="">
+	<cffunction name="uploadFile"              access="public" returntype="any" output="false" hint="">
 		<cfargument name="fileName"  type="string"  required="true"                                hint="Name of uploaded file." />
 		<cfargument name="filePath"  type="string"  required="true"                                hint="Path to file to be uploaded." />
 		<cfargument name="ParentID"  type="string"  required="true" default="0"                    hint="BoxID of folder to upload file to." />
