@@ -75,7 +75,7 @@
 			/>
 
 			<cfcatch type="any">
-				<cfif e.message EQ "Invalid RSA private key encoding.">
+				<cfif cfcatch.message EQ "Invalid RSA private key encoding.">
 					<cfset addBouncyCastleProvider() />
 					<cfreturn setPrivateKeyFromText( arguments.newPrivateKeyText ) />
 				</cfif>
@@ -84,6 +84,23 @@
 		</cftry>
 
 		<cfreturn this />
+	</cffunction>
+
+	<!---
+		I add the BounceCastleProvider to the underlying crypto APIs.
+
+		CAUTION: I don't really understand why this is [sometimes] required. But, if you
+		run into the error, "Invalid RSA private key encoding.", adding BouncyCastle may
+		solve the problem.
+
+		This method only needs to be called once per ColdFusion application life-cycle.
+		But, it can be called multiple times without error.
+	--->
+	<cffunction name="addBouncyCastleProvider" access="public" returntype="void" output="false" hint="I set the private key using the plain-text private key content. Returns [this].">
+		<cfset createObject( "java", "java.security.Security" ).addProvider(
+				createObject( "java", "org.bouncycastle.jce.provider.BouncyCastleProvider" ).init()
+			)
+		/>
 	</cffunction>
 
 	<cffunction name="testAlgorithm" access="public" returntype="void" output="false" hint="I test the given algorithm. If the algorithm is not valid, I throw an error.">

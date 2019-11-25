@@ -1,4 +1,4 @@
-<cfcomponent name="boxService" output="false" accessors="true" hint="Box service layer.">
+<cfcomponent name="box" output="false" accessors="true" hint="Box service layer.">
 
 	<cfproperty name="defaultUserID"        type="string"        />
 
@@ -9,8 +9,8 @@
 	<cfproperty name="collaborationService" type="collaboration" />
 	<cfproperty name="uploadSessionService" type="uploadSession" />
 
-	<cffunction name="init" returntype="boxService" access="public" output="false" hint="Constructor">
-		<cfargument name="defaultUserID" type="string" required="true" default="#getUserID()#" hint="The user to be used if no user is passed in." />
+	<cffunction name="init" returntype="box" access="public" output="false" hint="Constructor">
+		<cfargument name="defaultUserID" type="string" required="true" default="" hint="The user to be used if no user is passed in." />
 
 		<cfset setDefaultUserID( arguments.defaultUserID ) />
 
@@ -48,7 +48,7 @@
 	  --------------------------------FILES--------------------------------
 	  --------------------------------------------------------------------->
 
-	<cffunction name="uploadFile"            access="public" returntype="any" output="false" hint="">
+	<cffunction name="uploadFile"              access="public" returntype="any" output="false" hint="">
 		<cfargument name="fileName"  type="string"  required="true"                                hint="Name of uploaded file." />
 		<cfargument name="filePath"  type="string"  required="true"                                hint="Path to file to be uploaded." />
 		<cfargument name="ParentID"  type="string"  required="true" default="0"                    hint="BoxID of folder to upload file to." />
@@ -58,25 +58,25 @@
 
 		<cfargument name="returnIDOnly"  type="boolean"  required="true" default="1" hint="If true, only the BoxID of the file is returned. if false, the whole api response is returned" />
 
-		<cfset local.result = getFileService().upload( argumentCollection = arguments ) />
+		<cfset local.return = getFileService().upload( argumentCollection = arguments ) />
 
 		<cfif arguments.Preflight>
-			<cfset local.firstPos = find("=", local.result.upload_url) + 1 />
-			<cfset local.lastPos = find("&", local.result.upload_url) />
-			<cfset local.uploadSessionID = mid(local.result.upload_url, local.firstPos, local.lastPos - local.firstPos) />
+			<cfset local.firstPos = find("=", local.return.upload_url) + 1 />
+			<cfset local.lastPos = find("&", local.return.upload_url) />
+			<cfset local.uploadSessionID = mid(local.return.upload_url, local.firstPos, local.lastPos - local.firstPos) />
 			<cfdump var="#getUploadSession(uploadSessionID = local.uploadSessionID)#" /><cfabort />
-			<cfset local.result = getFileService().commitUpload(
+			<cfset local.return = getFileService().commitUpload(
 				uploadSessionID = local.uploadSessionID,
 				asUserID        = arguments.asUserID
 		 	) />
-		 	<cfdump var="#local.result#" /><cfabort />
+		 	<cfdump var="#local.return#" /><cfabort />
 		</cfif>
 
-		<cfif arguments.returnIDOnly AND structKeyExists(local.result, "success") and local.result.success>
-			<cfreturn local.result.entries[1].id />
+		<cfif arguments.returnIDOnly AND structKeyExists(local.return, "success") and local.return.success>
+			<cfreturn local.return.entries[1].id />
 		</cfif>
 
-		<cfreturn local.result />
+		<cfreturn local.return />
 	</cffunction>
 
 	<cffunction name="getFileInfo"             access="public" returntype="any" output="false" hint="">
@@ -218,13 +218,13 @@
 
 		<cfargument name="returnID"  type="boolean"  required="true" default="1" hint="If true, only the BoxID of the folder is returned. if false, the whole api response is returned" />
 
-		<cfset local.result = getFolderService().create( argumentCollection = arguments ) />
+		<cfset local.return = getFolderService().create( argumentCollection = arguments ) />
 
-		<cfif arguments.returnID AND local.result?.success ?: false>
-			<cfreturn local.result.id />
+		<cfif arguments.returnID AND local.return?.success ?: false>
+			<cfreturn local.return.id />
 		</cfif>
 
-		<cfreturn local.result />
+		<cfreturn local.return />
 	</cffunction>
 
 	<cffunction name="copyFolder"              access="public" returntype="any" output="false" hint="">
@@ -235,10 +235,10 @@
 
 		<cfargument name="returnID"  type="boolean"  required="true" default="1" hint="If true, only the BoxID of the folder is returned. if false, the whole api response is returned" />
 
-		<cfset local.result = getFolderService().copy( argumentCollection = arguments ) />
+		<cfset local.return = getFolderService().copy( argumentCollection = arguments ) />
 
-		<cfif arguments.returnID AND local.result?.success ?: false>
-			<cfreturn local.result.id />
+		<cfif arguments.returnID AND local.return?.success ?: false>
+			<cfreturn local.return.id />
 		</cfif>
 
 		<cfreturn local.return />
