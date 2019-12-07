@@ -38,116 +38,44 @@
 	<cfproperty name="metadata"            type="object"  hint="Specific metadata on the file, identified by [scope] and [templateKey]. The limit of metadata instances to be requested this way is 3." />
 
 	<cffunction name="init" returntype="boxFile" access="public" output="false" hint="Constructor">
-		<cfargument name="apiBoxFileResponseData" type="struct" required="true" hint="The object returned from the boxAPIHandler.makeRequest() function." />
+		<cfargument name="fileData" type="struct" required="true" default="#structNew()#" hint="The object returned from the boxAPIHandler.makeRequest() function." />
 
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "type")>
-			<cfset setType(arguments.apiBoxFileResponseData.type) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "id")>
-			<cfset setID(arguments.apiBoxFileResponseData.id) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "file_version")>
-			<cfset setFileVersion(arguments.apiBoxFileResponseData.file_version) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "sequence_id")>
-			<cfset setSequenceID(arguments.apiBoxFileResponseData.sequence_id) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "etag")>
-			<cfset setEtag(arguments.apiBoxFileResponseData.etag) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "sha1")>
-			<cfset setSha1(arguments.apiBoxFileResponseData.sha1) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "name")>
-			<cfset setName(arguments.apiBoxFileResponseData.name) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "description")>
-			<cfset setDescription(arguments.apiBoxFileResponseData.description) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "size")>
-			<cfset setSize(arguments.apiBoxFileResponseData.size) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "path_collection")>
-			<cfset setPathCollection(arguments.apiBoxFileResponseData.path_collection) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "created_at")>
-			<cfset setCreatedAt(arguments.apiBoxFileResponseData.created_at) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "modified_at")>
-			<cfset setModifiedAt(arguments.apiBoxFileResponseData.modified_at) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "trashed_at")>
-			<cfset setTrashedAt(arguments.apiBoxFileResponseData.trashed_at) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "purged_at")>
-			<cfset setPurgedAt(arguments.apiBoxFileResponseData.purged_at) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "content_created_at")>
-			<cfset setContentCreatedAt(arguments.apiBoxFileResponseData.content_created_at) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "content_modified_at")>
-			<cfset setContentModifiedAt(arguments.apiBoxFileResponseData.content_modified_at) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "expires_at")>
-			<cfset setExpiresAt(arguments.apiBoxFileResponseData.expires_at) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "created_by")>
-			<cfset setCreatedBy(arguments.apiBoxFileResponseData.created_by) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "modified_by")>
-			<cfset setModifiedBy(arguments.apiBoxFileResponseData.modified_by) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "owned_by")>
-			<cfset setOwnedBy(arguments.apiBoxFileResponseData.owned_by) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "shared_link")>
-			<cfset setSharedLink(arguments.apiBoxFileResponseData.shared_link) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "parent")>
-			<cfset setParent(arguments.apiBoxFileResponseData.parent) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "item_status")>
-			<cfset setItemStatus(arguments.apiBoxFileResponseData.item_status) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "version_number")>
-			<cfset setVersionNumber(arguments.apiBoxFileResponseData.version_number) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "comment_count")>
-			<cfset setCommentCount(arguments.apiBoxFileResponseData.comment_count) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "permissions")>
-			<cfset setPermissions(arguments.apiBoxFileResponseData.permissions) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "tags")>
-			<cfset setTags(arguments.apiBoxFileResponseData.tags) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "lock")>
-			<cfset setLock(arguments.apiBoxFileResponseData.lock) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "extension")>
-			<cfset setExtension(arguments.apiBoxFileResponseData.extension) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "is_package")>
-			<cfset setIsPackage(arguments.apiBoxFileResponseData.is_package) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "expiring_embed_link")>
-			<cfset setExpiringEmbedLink(arguments.apiBoxFileResponseData.expiring_embed_link) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "watermark_info")>
-			<cfset setWatermarkInfo(arguments.apiBoxFileResponseData.watermark_info) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "allowed_invitee_roles")>
-			<cfset setAllowedInviteeRoles(arguments.apiBoxFileResponseData.allowed_invitee_roles) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "is_externally_owned")>
-			<cfset setIsExternallyOwned(arguments.apiBoxFileResponseData.is_externally_owned) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "has_collaborations")>
-			<cfset setHasCollaborations(arguments.apiBoxFileResponseData.has_collaborations) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFileResponseData, "metadata")>
-			<cfset setMetadata(arguments.apiBoxFileResponseData.metadata) />
-		</cfif>
+		<cfset setType(               arguments.fileData?.type                 ) />
+		<cfset setID(                 arguments.fileData?.id                   ) />
+		<cfset setFileVersion(        arguments.fileData?.file_version         ) />
+		<cfset setSequenceID(         arguments.fileData?.sequence_id          ) />
+		<cfset setEtag(               arguments.fileData?.etag                 ) />
+		<cfset setSha1(               arguments.fileData?.sha1                 ) />
+		<cfset setName(               arguments.fileData?.name                 ) />
+		<cfset setDescription(        arguments.fileData?.description          ) />
+		<cfset setSize(               arguments.fileData?.size                 ) />
+		<cfset setPathCollection(     arguments.fileData?.path_collection      ) />
+		<cfset setCreatedAt(          arguments.fileData?.created_at           ) />
+		<cfset setModifiedAt(         arguments.fileData?.modified_at          ) />
+		<cfset setTrashedAt(          arguments.fileData?.trashed_at           ) />
+		<cfset setPurgedAt(           arguments.fileData?.purged_at            ) />
+		<cfset setContentCreatedAt(   arguments.fileData?.content_created_at   ) />
+		<cfset setContentModifiedAt(  arguments.fileData?.content_modified_at  ) />
+		<cfset setExpiresAt(          arguments.fileData?.expires_at           ) />
+		<cfset setCreatedBy(          arguments.fileData?.created_by           ) />
+		<cfset setModifiedBy(         arguments.fileData?.modified_by          ) />
+		<cfset setOwnedBy(            arguments.fileData?.owned_by             ) />
+		<cfset setSharedLink(         arguments.fileData?.shared_link          ) />
+		<cfset setParent(             arguments.fileData?.parent               ) />
+		<cfset setItemStatus(         arguments.fileData?.item_status          ) />
+		<cfset setVersionNumber(      arguments.fileData?.version_number       ) />
+		<cfset setCommentCount(       arguments.fileData?.comment_count        ) />
+		<cfset setPermissions(        arguments.fileData?.permissions          ) />
+		<cfset setTags(               arguments.fileData?.tags                 ) />
+		<cfset setLock(               arguments.fileData?.lock                 ) />
+		<cfset setExtension(          arguments.fileData?.extension            ) />
+		<cfset setIsPackage(          arguments.fileData?.is_package           ) />
+		<cfset setExpiringEmbedLink(  arguments.fileData?.expiring_embed_link  ) />
+		<cfset setWatermarkInfo(      arguments.fileData?.watermark_info       ) />
+		<cfset setAllowedInviteeRoles(arguments.fileData?.allowed_invitee_roles) />
+		<cfset setIsExternallyOwned(  arguments.fileData?.is_externally_owned  ) />
+		<cfset setHasCollaborations(  arguments.fileData?.has_collaborations   ) />
+		<cfset setMetadata(           arguments.fileData?.metadata             ) />
 
 		<cfreturn this />
 	</cffunction>

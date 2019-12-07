@@ -36,110 +36,42 @@
 	<cfproperty name="metadata"                              type="object"  hint="Specific metadata on the folder, identified by [scope] and [templateKey]. The limit of metadata instances to be requested this way is 3.</p></div></div></div>"                                                                                         />
 
 	<cffunction name="init" returntype="boxFolder" access="public" output="false" hint="Constructor">
-		<cfargument name="apiBoxFolderResponseData" type="struct" required="true" hint="The object returned from the boxAPIHandler.makeRequest() function." />
+		<cfargument name="folderData" type="struct" required="true" default="#structNew()#" hint="The object returned from the boxAPIHandler.makeRequest() function." />
 
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "type") >
-			<cfset setType(arguments.apiBoxFolderResponseData.type) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "id") >
-			<cfset setID(arguments.apiBoxFolderResponseData.id) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "sequence_id") >
-			<cfset setSequenceID(arguments.apiBoxFolderResponseData.sequence_id) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "etag") >
-			<cfset setEtag(arguments.apiBoxFolderResponseData.etag) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "name") >
-			<cfset setName(arguments.apiBoxFolderResponseData.name) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "created_at") >
-			<cfset setCreatedAt(arguments.apiBoxFolderResponseData.created_at) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "modified_at") >
-			<cfset setModifiedAt(arguments.apiBoxFolderResponseData.modified_at) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "description") >
-			<cfset setDescription(arguments.apiBoxFolderResponseData.description) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "size") >
-			<cfset setSize(arguments.apiBoxFolderResponseData.size) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "path_collection") >
-			<cfset setPathCollection(arguments.apiBoxFolderResponseData.path_collection) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "created_by") >
-			<cfset setCreatedBy(arguments.apiBoxFolderResponseData.created_by) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "modified_by") >
-			<cfset setModifiedBy(arguments.apiBoxFolderResponseData.modified_by) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "trashed_at") >
-			<cfset setTrashedAt(arguments.apiBoxFolderResponseData.trashed_at) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "purged_at") >
-			<cfset setPurgedAt(arguments.apiBoxFolderResponseData.purged_at) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "content_created_at") >
-			<cfset setContentCreatedAt(arguments.apiBoxFolderResponseData.content_created_at) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "content_modified_at") >
-			<cfset setContentModifiedAt(arguments.apiBoxFolderResponseData.content_modified_at) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "expires_at") >
-			<cfset setExpiresAt(arguments.apiBoxFolderResponseData.expires_at) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "owned_by") >
-			<cfset setOwnedBy(arguments.apiBoxFolderResponseData.owned_by) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "shared_link") >
-			<cfset setSharedLink(arguments.apiBoxFolderResponseData.shared_link) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "folder_upload_email") >
-			<cfset setFolderUploadEmail(arguments.apiBoxFolderResponseData.folder_upload_email) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "parent") >
-			<cfset setParent(arguments.apiBoxFolderResponseData.parent) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "item_status") >
-			<cfset setItemStatus(arguments.apiBoxFolderResponseData.item_status) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "item_collection") >
-			<cfset setItemCollection(arguments.apiBoxFolderResponseData.item_collection) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "sync_state") >
-			<cfset setSyncState(arguments.apiBoxFolderResponseData.sync_state) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "has_collaborations") >
-			<cfset setHasCollaborations(arguments.apiBoxFolderResponseData.has_collaborations) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "permissions") >
-			<cfset setPermissions(arguments.apiBoxFolderResponseData.permissions) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "tags") >
-			<cfset setTags(arguments.apiBoxFolderResponseData.tags) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "can_non_owners_invite") >
-			<cfset setCanNonOwnersInvite(arguments.apiBoxFolderResponseData.can_non_owners_invite) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "is_externally_owned") >
-			<cfset setIsExternallyOwned(arguments.apiBoxFolderResponseData.is_externally_owned) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "is_collaboration_restricted_to_enterprise") >
-			<cfset setIsCollaborationRestrictedToEnterprise(arguments.apiBoxFolderResponseData.is_collaboration_restricted_to_enterprise) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "allowed_shared_link_access_levels") >
-			<cfset setAllowedSharedLinkAccessLevels(arguments.apiBoxFolderResponseData.allowed_shared_link_access_levels) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "allowed_invitee_roles") >
-			<cfset setAllowedInviteeRoles(arguments.apiBoxFolderResponseData.allowed_invitee_roles) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "watermark_info") >
-			<cfset setWatermarkInfo(arguments.apiBoxFolderResponseData.watermark_info) />
-		</cfif>
-		<cfif structKeyExists(arguments.apiBoxFolderResponseData, "metadata") >
-			<cfset setMetadata(arguments.apiBoxFolderResponseData.metadata) />
-		</cfif>
+		<cfset setType(                                  arguments.folderData?.type                                      ) />
+		<cfset setID(                                    arguments.folderData?.id                                        ) />
+		<cfset setSequenceID(                            arguments.folderData?.sequence_id                               ) />
+		<cfset setEtag(                                  arguments.folderData?.etag                                      ) />
+		<cfset setName(                                  arguments.folderData?.name                                      ) />
+		<cfset setCreatedAt(                             arguments.folderData?.created_at                                ) />
+		<cfset setModifiedAt(                            arguments.folderData?.modified_at                               ) />
+		<cfset setDescription(                           arguments.folderData?.description                               ) />
+		<cfset setSize(                                  arguments.folderData?.size                                      ) />
+		<cfset setPathCollection(                        arguments.folderData?.path_collection                           ) />
+		<cfset setCreatedBy(                             arguments.folderData?.created_by                                ) />
+		<cfset setModifiedBy(                            arguments.folderData?.modified_by                               ) />
+		<cfset setTrashedAt(                             arguments.folderData?.trashed_at                                ) />
+		<cfset setPurgedAt(                              arguments.folderData?.purged_at                                 ) />
+		<cfset setContentCreatedAt(                      arguments.folderData?.content_created_at                        ) />
+		<cfset setContentModifiedAt(                     arguments.folderData?.content_modified_at                       ) />
+		<cfset setExpiresAt(                             arguments.folderData?.expires_at                                ) />
+		<cfset setOwnedBy(                               arguments.folderData?.owned_by                                  ) />
+		<cfset setSharedLink(                            arguments.folderData?.shared_link                               ) />
+		<cfset setFolderUploadEmail(                     arguments.folderData?.folder_upload_email                       ) />
+		<cfset setParent(                                arguments.folderData?.parent                                    ) />
+		<cfset setItemStatus(                            arguments.folderData?.item_status                               ) />
+		<cfset setItemCollection(                        arguments.folderData?.item_collection                           ) />
+		<cfset setSyncState(                             arguments.folderData?.sync_state                                ) />
+		<cfset setHasCollaborations(                     arguments.folderData?.has_collaborations                        ) />
+		<cfset setPermissions(                           arguments.folderData?.permissions                               ) />
+		<cfset setTags(                                  arguments.folderData?.tags                                      ) />
+		<cfset setCanNonOwnersInvite(                    arguments.folderData?.can_non_owners_invite                     ) />
+		<cfset setIsExternallyOwned(                     arguments.folderData?.is_externally_owned                       ) />
+		<cfset setIsCollaborationRestrictedToEnterprise( arguments.folderData?.is_collaboration_restricted_to_enterprise ) />
+		<cfset setAllowedSharedLinkAccessLevels(         arguments.folderData?.allowed_shared_link_access_levels         ) />
+		<cfset setAllowedInviteeRoles(                   arguments.folderData?.allowed_invitee_roles                     ) />
+		<cfset setWatermarkInfo(                         arguments.folderData?.watermark_info                            ) />
+		<cfset setMetadata(                              arguments.folderData?.metadata                                  ) />
 
 		<cfreturn this />
 	</cffunction>
