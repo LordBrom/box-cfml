@@ -13,7 +13,7 @@
 	<cffunction name="create" access="public" returntype="any" output="false" hint="">
 		<cfargument name="folderName" type="string" required="true" hint="Name of the newly created folder." />
 		<cfargument name="ParentID"   type="string" required="true" hint="BoxID of folder new folder will be created in." />
-		<cfargument name="asUserID"   type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID"   type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.jsonBody = structNew() />
 		<cfset local.jsonBody['name']   = arguments.folderName />
@@ -34,7 +34,7 @@
 		<cfargument name="folderName" type="string" required="true" hint="Name of the newly created folder." />
 		<cfargument name="ParentID"   type="string" required="true" hint="BoxID of folder new folder will be created in." />
 		<cfargument name="SourceID"   type="string" required="true" hint="BoxID of folder to be copied." />
-		<cfargument name="asUserID"   type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID"   type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.jsonBody = structNew() />
 		<cfset local.jsonBody['name']   = arguments.folderName />
@@ -55,7 +55,7 @@
 
 	<cffunction name="getContents" access="public" returntype="any" output="false" hint="">
 		<cfargument name="folderID" type="string" required="true" hint="BoxID of folder to get contents of." />
-		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
@@ -70,7 +70,7 @@
 
 	<cffunction name="getInfo" access="public" returntype="any" output="false" hint="">
 		<cfargument name="folderID" type="string" required="true" hint="BoxID of folder to get info of." />
-		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
@@ -89,7 +89,7 @@
 		<cfargument name="folderName" type="string" required="false" hint="Name to change the folder to." />
 		<cfargument name="parentID"   type="string" required="false" hint="BoxID of folder to move the folder to." />
 		<cfargument name="tags"       type="array"  required="false" hint="Array of strings. These tags will by applied to the folder." />
-		<cfargument name="asUserID"   type="string" required="true"  hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID"   type="string" required="true"  hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.jsonBody = structNew() />
 		<cfif structKeyExists(arguments, "folderName") and len(arguments.folderName)>
@@ -116,7 +116,7 @@
 
 	<cffunction name="delete" access="public" returntype="any" output="false" hint="">
 		<cfargument name="folderID" type="string" required="true" hint="BoxID of folder to delete." />
-		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object      = this.objectName,
@@ -131,7 +131,7 @@
 
 	<cffunction name="getCollaborations" access="public" returntype="any" output="false" hint="">
 		<cfargument name="folderID" type="string" required="true" hint="BoxID of folder to delete." />
-		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,

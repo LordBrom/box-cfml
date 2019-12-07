@@ -12,7 +12,7 @@
 
 	<cffunction name="getInfo" access="public" returntype="any" output="false" hint="">
 		<cfargument name="userID"   type="string" required="true" hint="BoxID of user to get info of." />
-		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
@@ -25,7 +25,7 @@
 	</cffunction>
 
 	<cffunction name="getCurrentUserInfo" access="public" returntype="any" output="false" hint="">
-		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
@@ -39,7 +39,7 @@
 
 	<cffunction name="createAppUser" access="public" returntype="any" output="false" hint="">
 		<cfargument name="userName" type="string" required="true" hint="Name of user to create" />
-		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.boxID = "" />
 		<cfset local.jsonBody = structNew() />

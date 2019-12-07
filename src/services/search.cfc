@@ -16,7 +16,7 @@
 		<cfargument name="type"            type="string"  required="true" hint="The type of objects you want to include in the search results. The type can be [file], [folder], or [web_link]." />
 		<cfargument name="limit"           type="numeric" required="true" hint="The maximum number of items to return. The default is 30 and the maximum is 200." />
 
-		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.return = structNew() />
 		<cfset local.queryParams = "query=#arguments.query#" />

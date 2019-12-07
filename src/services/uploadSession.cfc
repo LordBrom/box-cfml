@@ -12,7 +12,7 @@
 
 	<cffunction name="get" access="public" returntype="struct" output="false" hint="">
 		<cfargument name="uploadSessionID" type="string"  required="true" hint="Name of uploaded file." />
-		<cfargument name="asUserID"        type="string"  required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID"        type="string"  required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.httpMethod = "GET" />
 
@@ -28,7 +28,7 @@
 
 	<cffunction name="listParts" access="public" returntype="struct" output="false" hint="">
 		<cfargument name="uploadSessionID" type="string"  required="true" hint="Name of uploaded file." />
-		<cfargument name="asUserID"        type="string"  required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID"        type="string"  required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.httpMethod = "GET" />
 
@@ -48,7 +48,7 @@
 		<cfargument name="fileSize" type="numeric" required="true" hint="Size of the newly created file." />
 		<cfargument name="filePath" type="string"  required="true" hint="Path to file to be uploaded." />
 		<cfargument name="ParentID" type="string" required="true" hint="BoxID of folder new file will be created in." />
-		<cfargument name="asUserID" type="string"  required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string"  required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.jsonBody = structNew() />
 		<cfset local.jsonBody['file_name'] = arguments.fileName />

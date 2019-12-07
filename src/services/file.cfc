@@ -16,7 +16,7 @@
 		<cfargument name="ParentID"  type="string"  required="true" hint="BoxID of folder to upload file to." />
 		<cfargument name="fileID"    type="string"  required="true" hint="BoxID of file to update the version of." />
 		<cfargument name="preflight" type="boolean" required="true" hint="Performs a Preflight check, to see if uploading the file would be successful." />
-		<cfargument name="asUserID"  type="string"  required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID"  type="string"  required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.boxID = "" />
 		<cfset local.jsonBody = structNew() />
@@ -41,7 +41,7 @@
 
 	<cffunction name="getInfo" access="public" returntype="struct" output="false" hint="">
 		<cfargument name="fileID"   type="string" required="true" hint="BoxID of file to get info of." />
-		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
@@ -58,7 +58,7 @@
 		<cfargument name="fileName" type="string" required="false" hint="Name to change the file to." />
 		<cfargument name="parentID" type="string" required="false" hint="BoxID of folder to move the file to." />
 		<cfargument name="tags"     type="array"  required="false" hint="Array of strings. These tags will by applied to the file." />
-		<cfargument name="asUserID" type="string" required="true"  hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string" required="true"  hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.return = structNew() />
 
@@ -87,7 +87,7 @@
 
 	<cffunction name="delete" access="public" returntype="struct" output="false" hint="">
 		<cfargument name="fileID"   type="string" required="true" hint="BoxID of file to delete." />
-		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.return = structNew() />
 
@@ -105,7 +105,7 @@
 		<cfargument name="fileName" type="string" required="true" hint="Name of the newly created file." />
 		<cfargument name="ParentID" type="string" required="true" hint="BoxID of folder new file will be created in." />
 		<cfargument name="SourceID" type="string" required="true" hint="BoxID of folder to be copied." />
-		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.boxID = "" />
 		<cfset local.jsonBody = structNew() />
@@ -126,7 +126,7 @@
 
 	<cffunction name="getCollaborations" access="public" returntype="struct" output="false" hint="">
 		<cfargument name="fileID"   type="string" required="true" hint="BoxID of file to delete." />
-		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.return = structNew() />
 
@@ -143,7 +143,7 @@
 
 	<cffunction name="createUploadSession" access="public" returntype="struct" output="false" hint="">
 		<cfargument name="fileID"   type="string" required="true" hint="BoxID of file to delete." />
-		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.return = structNew() />
 
@@ -165,7 +165,7 @@
 
 	<cffunction name="ListVersions" access="public" returntype="struct" output="false" hint="">
 		<cfargument name="fileID"   type="string" required="true" hint="BoxID of file to delete." />
-		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.return = structNew() />
 
@@ -183,7 +183,7 @@
 	<cffunction name="getVersion" access="public" returntype="struct" output="false" hint="">
 		<cfargument name="fileID"    type="string" required="true" hint="BoxID of file to delete." />
 		<cfargument name="versionID" type="string" required="true" hint="Version number to retrieve." />
-		<cfargument name="asUserID"  type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID"  type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.return = structNew() />
 
@@ -201,7 +201,7 @@
 	<cffunction name="revertVersion" access="public" returntype="struct" output="false" hint="">
 		<cfargument name="fileID"    type="string" required="true" hint="BoxID of file to delete." />
 		<cfargument name="versionID" type="string" required="true" hint="Version number to retrieve." />
-		<cfargument name="asUserID"  type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID"  type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.return = structNew() />
 		<cfset local.jsonBody = structNew() />
@@ -223,7 +223,7 @@
 	<cffunction name="deleteVersion" access="public" returntype="struct" output="false" hint="">
 		<cfargument name="fileID"    type="string" required="true" hint="BoxID of file to delete." />
 		<cfargument name="versionID" type="string" required="true" hint="Version number to retrieve." />
-		<cfargument name="asUserID"  type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID"  type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(

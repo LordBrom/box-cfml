@@ -15,7 +15,7 @@
 		<cfargument name="accessibleByBoxID" type="string" required="true" hint="The ID of the user or group that is granted access" />
 		<cfargument name="accessibleType"    type="string" required="true" hint="[user] or [group]" />
 		<cfargument name="role"              type="string" required="true" hint="The level of access granted. Can be [editor], [viewer], [previewer], [uploader], [previewer uploader], [viewer uploader], or [co-owner]." />
-		<cfargument name="asUserID"          type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID"          type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.boxID = "" />
 		<cfset local.jsonBody = structNew() />
@@ -40,7 +40,7 @@
 
 	<cffunction name="get" access="public" returntype="struct" output="false" hint="">
 		<cfargument name="collaborationID"   type="string" required="true" hint="The ID of the collaboration to get" />
-		<cfargument name="asUserID"          type="string" required="true" hint="BoxID of user to perform action oh behalf of." />
+		<cfargument name="asUserID"          type="string" required="true" hint="BoxID of user to perform action on behalf of." />
 
 		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
