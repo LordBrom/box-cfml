@@ -227,63 +227,71 @@
 		<cfset local.return.success = false />
 		<cfset local.return.statusCode = arguments.response.statusCode />
 
-		<!---
-			200 OK
-			201 Created
-			204 No Content
-		 --->
-		<cfif val(arguments.response.statusCode) EQ 409 >
-			<cfif returnBinary EQ 'no' AND len(arguments.response.fileContent)>
-					<cfset structAppend(local.return, deserializeJSON(arguments.response.fileContent)) />
-			<cfelse>
-				<cfset local.return.content = arguments.response.fileContent />
-			</cfif>
-		<cfelseif NOT ListFind('200,201,204', val(arguments.response.statusCode)) >
-			<cfif structKeyExists(application,'bugTracker')>
-				<cfset exceptionStruct = structNew() />
-				<cfset extraInfoStruct = structNew() />
-				<cfset extraInfoStruct._callStack = CallStackGet() />
-				<cfset extraInfoStruct.variables  = variables />
-				<cfset extraInfoStruct.arguments  = arguments />
-				<cfset extraInfoStruct.local      = local />
+		 <cfswitch expression="#val(left(arguments.response.statusCode, 3))#">
+			<!---
+				200 OK
+				201 Created
+				204 No Content
+			 --->
+		 	<cfcase value="200,201,204">
+				<cftry>
+					<cfif returnBinary EQ 'no' AND len(arguments.response.fileContent)>
+						<cfset structAppend(local.return, deserializeJSON(arguments.response.fileContent)) />
+					<cfelse>
+						<cfset local.return.content = arguments.response.fileContent />
+					</cfif>
+					<cfset local.return.success = true />
+					<cfcatch>
+						<!--- could not JSON Parse response; but it was a 200OK --->
+						<cfset local.return.success = true />
+						<cfif structKeyExists(application,'bugTracker')>
+							<cfset exceptionStruct = cfcatch />
+							<cfset extraInfoStruct = structNew() />
+							<cfset extraInfoStruct._callStack = CallStackGet() />
+							<cfset extraInfoStruct.variables  = variables />
+							<cfset extraInfoStruct.arguments  = arguments />
+							<cfset extraInfoStruct.local      = local />
 
-				<cfset application.bugTracker.notifyService(
-					message      = "Box API returned unsuccessful: #arguments.response.statusCode#",
-					exception    = exceptionStruct,
-					ExtraInfo    = extraInfoStruct,
-					severityCode = "warning"
-				) />
-			</cfif>
-		<cfelse>
-			<cftry>
+							<cfset application.bugTracker.notifyService(
+								message      = "Box API failed to handle successful response.",
+								exception    = exceptionStruct,
+								ExtraInfo    = extraInfoStruct,
+								severityCode = "warning"
+							) />
+						</cfif>
+						<cfrethrow />
+					</cfcatch>
+				</cftry>
+		 	</cfcase>
+			<!---
+				409 Conflict - name of object already in use
+			 --->
+		 	<cfcase value="409">
 				<cfif returnBinary EQ 'no' AND len(arguments.response.fileContent)>
-					<cfset structAppend(local.return, deserializeJSON(arguments.response.fileContent)) />
+						<cfset structAppend(local.return, deserializeJSON(arguments.response.fileContent)) />
 				<cfelse>
 					<cfset local.return.content = arguments.response.fileContent />
 				</cfif>
-				<cfset local.return.success = true />
-				<cfcatch>
-					<!--- could not JSON Parse response; but it was a 200OK --->
-					<cfset local.return.success = true />
-					<cfif structKeyExists(application,'bugTracker')>
-						<cfset exceptionStruct = cfcatch />
-						<cfset extraInfoStruct = structNew() />
-						<cfset extraInfoStruct._callStack = CallStackGet() />
-						<cfset extraInfoStruct.variables  = variables />
-						<cfset extraInfoStruct.arguments  = arguments />
-						<cfset extraInfoStruct.local      = local />
+		 	</cfcase>
 
-						<cfset application.bugTracker.notifyService(
-							message      = "Box API failed to handle successful response.",
-							exception    = exceptionStruct,
-							ExtraInfo    = extraInfoStruct,
-							severityCode = "warning"
-						) />
-					</cfif>
-					<cfrethrow />
-				</cfcatch>
-			</cftry>
-		</cfif>
+		 	<cfdefaultcase>
+				<cfif structKeyExists(application,'bugTracker')>
+					<cfset exceptionStruct = structNew() />
+					<cfset extraInfoStruct = structNew() />
+					<cfset extraInfoStruct._callStack = CallStackGet() />
+					<cfset extraInfoStruct.variables  = variables />
+					<cfset extraInfoStruct.arguments  = arguments />
+					<cfset extraInfoStruct.local      = local />
+
+					<cfset application.bugTracker.notifyService(
+						message      = "Box API returned unsuccessful: #arguments.response.statusCode#",
+						exception    = exceptionStruct,
+						ExtraInfo    = extraInfoStruct,
+						severityCode = "warning"
+					) />
+				</cfif>
+		 	</cfdefaultcase>
+		 </cfswitch>
 
 		<cfreturn local.return />
 	</cffunction>
