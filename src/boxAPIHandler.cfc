@@ -183,21 +183,6 @@
 			</cfhttp>
 
 			<cfcatch type="any">
-				<cfif structKeyExists(application,'bugTracker')>
-					<cfset exceptionStruct = cfcatch />
-					<cfset extraInfoStruct = structNew() />
-					<cfset extraInfoStruct._callStack = CallStackGet() />
-					<cfset extraInfoStruct.variables  = variables />
-					<cfset extraInfoStruct.arguments  = arguments />
-					<cfset extraInfoStruct.local      = local />
-
-					<cfset application.bugTracker.notifyService(
-						message      = "Box API failed to send.",
-						exception    = exceptionStruct,
-						ExtraInfo    = extraInfoStruct,
-						severityCode = "error"
-					) />
-				</cfif>
 				<cfrethrow />
 			</cfcatch>
 		</cftry>
@@ -244,21 +229,6 @@
 					<cfcatch>
 						<!--- could not JSON Parse response; but it was a 200OK --->
 						<cfset local.return.success = true />
-						<cfif structKeyExists(application,'bugTracker')>
-							<cfset exceptionStruct = cfcatch />
-							<cfset extraInfoStruct = structNew() />
-							<cfset extraInfoStruct._callStack = CallStackGet() />
-							<cfset extraInfoStruct.variables  = variables />
-							<cfset extraInfoStruct.arguments  = arguments />
-							<cfset extraInfoStruct.local      = local />
-
-							<cfset application.bugTracker.notifyService(
-								message      = "Box API failed to handle successful response.",
-								exception    = exceptionStruct,
-								ExtraInfo    = extraInfoStruct,
-								severityCode = "warning"
-							) />
-						</cfif>
 						<cfrethrow />
 					</cfcatch>
 				</cftry>
@@ -275,21 +245,6 @@
 		 	</cfcase>
 
 		 	<cfdefaultcase>
-				<cfif structKeyExists(application,'bugTracker')>
-					<cfset exceptionStruct = structNew() />
-					<cfset extraInfoStruct = structNew() />
-					<cfset extraInfoStruct._callStack = CallStackGet() />
-					<cfset extraInfoStruct.variables  = variables />
-					<cfset extraInfoStruct.arguments  = arguments />
-					<cfset extraInfoStruct.local      = local />
-
-					<cfset application.bugTracker.notifyService(
-						message      = "Box API returned unsuccessful: #arguments.response.statusCode#",
-						exception    = exceptionStruct,
-						ExtraInfo    = extraInfoStruct,
-						severityCode = "warning"
-					) />
-				</cfif>
 		 	</cfdefaultcase>
 		 </cfswitch>
 
