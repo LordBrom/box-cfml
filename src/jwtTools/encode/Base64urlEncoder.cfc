@@ -1,4 +1,4 @@
-<cfcomponent name="Base64urlEncoder" output="false" hint="I encode and decode values using the Base64url character set (which is a variation of the Base64 standard intended for use with URLs).">
+<cfcomponent output="false" hint="I encode and decode values using the Base64url character set (which is a variation of the Base64 standard intended for use with URLs).">
 
 	<cffunction name="init" access="public" returntype="any" output="false" hint="I initialize the Base64url encoder.">
 		<cfreturn this />

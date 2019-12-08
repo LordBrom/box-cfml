@@ -3,7 +3,7 @@ The files within jwtTools have been copied from Ben Nadel's code found here, htt
 It has been abridged to just contain what is required for the Box API.
 As well as converted to CFML.
 ------------------------------------------------------------------------------------------------------------------------------->
-<cfcomponent name="JsonWebTokens" output="false" hint="I provide a ColdFusion gateway for creating and consuming JSON Web Tokens (JWT).">
+<cfcomponent output="false" hint="I provide a ColdFusion gateway for creating and consuming JSON Web Tokens (JWT).">
 
 	<cffunction name="init" access="public" returntype="any" output="false" hint="I initialize the JSON Web Tokens gateway. The gateway can create clients; or, it can proxy a client for ease-of-use.">
 		<cfreturn this />

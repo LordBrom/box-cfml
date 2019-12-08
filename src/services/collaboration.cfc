@@ -1,4 +1,4 @@
-<cfcomponent name="collaboration" output="false" hint="Box service layer for file objects.">
+<cfcomponent output="false" hint="Box service layer for file objects.">
 
 	<cfset this.objectName = "collaborations" />
 

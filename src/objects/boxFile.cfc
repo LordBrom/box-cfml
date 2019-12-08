@@ -1,4 +1,4 @@
-<cfcomponent name="boxFile" output="false" accessors="true" hint="Box file object">
+<cfcomponent output="false" accessors="true" hint="Box file object">
 
 	<cfproperty name="type"                type="string"  hint="[file]" />
 	<cfproperty name="ID"                  type="string"  hint="The ID of the file object" />

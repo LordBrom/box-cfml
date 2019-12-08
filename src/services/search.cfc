@@ -1,4 +1,4 @@
-<cfcomponent name="search" output="false" hint="Box service layer for searching for objects.">
+<cfcomponent output="false" hint="Box service layer for searching for objects.">
 
 	<cfset this.objectName = "search" />
 

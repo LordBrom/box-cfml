@@ -1,4 +1,4 @@
-<cfcomponent name="boxAPIHandler" output="false" hint="Contains functions that interact with the Box.com API via http calls">
+<cfcomponent output="false" hint="Contains functions that interact with the Box.com API via http calls">
 
 	<cfset this.boxAPIURL       = "https://api.box.com/" />
 	<cfset this.boxAPIUploadURL = "https://upload.box.com/api/" /> <!--- used for file upload only --->

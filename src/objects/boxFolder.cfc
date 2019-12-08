@@ -1,4 +1,4 @@
-<cfcomponent name="boxFolder" output="false" accessors="true" hint="Box folder object">
+<cfcomponent output="false" accessors="true" hint="Box folder object">
 
 	<cfproperty name="type"                                  type="string"  hint="[folder]"                                                                                                                                                                                                                                               />
 	<cfproperty name="ID"                                    type="string"  hint="The ID of the folder object."                                                                                                                                                                                                                           />

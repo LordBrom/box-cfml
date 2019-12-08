@@ -1,4 +1,4 @@
-<cfcomponent name="user" output="false" hint="Box service layer for folder objects.">
+<cfcomponent output="false" hint="Box service layer for folder objects.">
 
 	<cfset this.objectName = "users" />
 

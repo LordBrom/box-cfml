@@ -1,4 +1,4 @@
-<cfcomponent name="RSASigner" output="false" hint="I provide sign and verify methods for RSA-based signing.">
+<cfcomponent output="false" hint="I provide sign and verify methods for RSA-based signing.">
 
 	<!---
 		NOTE: The algorithm uses the names provided in the Java Cryptography Architecture

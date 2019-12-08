@@ -1,4 +1,4 @@
-<cfcomponent name="JsonWebTokensClient" output="false" hint="I provide encoding and decoding methods for JSON Web Tokens (JWT).">
+<cfcomponent output="false" hint="I provide encoding and decoding methods for JSON Web Tokens (JWT).">
 
 	<cffunction name="init" access="public" returntype="any" output="false" hint="I initialize the JSON Web Tokens client with the given signer.">
 		<cfargument name="jsonEncoder"      type="any" required="true" hint="I am the JSON encoding utility." />

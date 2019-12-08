@@ -1,6 +1,6 @@
 <!--- Rename this file to "boxAuthentication.cfc" before use. --->
 
-<cfcomponent name="boxAuthentication" output="false" hint="Box application credentials; [Rename this file to ""boxAuthentication"" before use]">
+<cfcomponent output="false" hint="Box application credentials; [Rename this file to ""boxAuthentication"" before use]">
 
 	<cffunction name="getEnterpriseID" access="public" returntype="string" output="false" hint="">
 		<cfreturn "00000000" />
