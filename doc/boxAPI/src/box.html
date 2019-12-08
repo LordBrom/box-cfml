@@ -1,0 +1,2221 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>box</title>
+	<meta name="keywords" content="boxAPI.src.concurrent.Callable interface">
+	<!-- common assets -->
+	
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel ="stylesheet" type="text/css" href="../../bootstrap/css/bootstrap.min.css">
+<link rel ="stylesheet" type="text/css" href="../../stylesheet.css">
+	
+<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,300italic,400italic,700,700italic|Ubuntu+Mono' rel='stylesheet' type='text/css' />
+	
+<script src="../../bootstrap/js/jquery-2.1.0.min.js" type="text/javascript"></script>
+<script src="../../bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function() {
+	// Global Tool Tip Settings
+	$( '[title]' ).tooltip({
+		 animation: 'slide',
+		 delay: { show: 250, hide: 250 }
+	});
+});
+</script>
+	<!-- syntax highlighter -->
+	<link type="text/css" rel="stylesheet" href="../../highlighter/styles/shCoreDefault.css">
+	<script src="../../highlighter/scripts/shCore.js"></script>
+	<script src="../../highlighter/scripts/shBrushColdFusion.js"></script>
+	<script src="../../highlighter/scripts/shBrushXml.js"></script>
+	<script src="../../highlighter/scripts/shBrushSql.js"></script>
+	<script src="../../highlighter/scripts/shBrushJScript.js"></script>
+	<script src="../../highlighter/scripts/shBrushJava.js"></script>
+	<script src="../../highlighter/scripts/shBrushCss.js"></script>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+</head>
+
+<body class="withNavbar">
+
+
+
+<!-- ========= START OF NAVBAR ======= -->
+<a name="navbar_top"></a>
+<a href="#skip-navbar_top" title="skip navigation links"></a>	
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+    
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#class-navigation">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#"><strong>Box API</strong></a>
+		</div>
+
+	    <div class="collapse navbar-collapse" id="class-navigation">
+	    	<ul class="nav navbar-nav">
+				
+					<li><a href="../../overview-summary.html"><i class="glyphicon glyphicon-plane"></i> overview</a></li>
+					
+					<li><a href="package-summary.html"><i class="glyphicon glyphicon-folder-open"></i> &nbsp;package</a></li>
+				
+					<li class="dropdown active">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-file"></i> class <b class="caret"></b></a>
+
+						<ul class="dropdown-menu">
+							<li><a href="#class">Class Definition</a></li>
+							<li><a href="#constructor_summary">Constructor Summary</a></li>
+							<li><a href="#constructor_detail">Constructor Detail</a></li>
+							<li><a href="#inherited_methods">Inherited Methods</a></li>
+							<li><a href="#method_summary">Method Summary</a></li>
+							<li><a href="#method_detail">Method Detail</a></li>
+							<li><a href="#property_summary">Property Summary</a></li>
+							<li><a href="#property_detail">Property Detail</a></li>
+							
+						</ul>
+					</li>
+				
+	      	</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../../index.html?boxAPI/src/box.html" target="_top">
+					<i class="glyphicon glyphicon-fullscreen"></i> Frames
+					</a>
+				</li>
+			</ul>
+	    </div>
+
+	</div>
+</nav>	
+
+<a name="skip-navbar_top"></a>
+<!-- ========= END OF NAVBAR ========= -->
+
+<!-- ======== start of class data ======== -->
+<a name="class"><!-- --></a>
+
+<!-- Package -->
+<div class="pull-right">
+	<a href="package-summary.html" title="Package: boxAPI.src"><span class="label label-success">boxAPI.src</span></a>
+</div>
+
+<h2>
+
+Class
+box</h2>
+
+
+
+<!-- Inheritance Tree-->
+<pre style="background:white">WEB-INF.cftags.component
+    <img src="../../resources/inherit.gif" alt="extended by ">boxAPI.src.box
+</pre>
+
+
+
+<div id="class-hint">
+	<p>Box service layer.</p>
+</div>
+
+
+<!-- Clas Attributes -->
+<div class="panel panel-info">
+	<div class="panel-heading"><strong>Class Attributes:</strong></div>
+		<div class="panel-body">
+		
+			<li class="label label-danger label-annotations">
+				output 
+				: false 
+			</li>
+			&nbsp;
+			
+			<li class="label label-danger label-annotations">
+				accessors 
+				: true 
+			</li>
+			&nbsp;
+			
+	</div>
+</div>
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="property_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="5">
+			<strong>Property Summary</strong>
+		</th>
+	</tr>
+	<tr class="info">
+		<th align="left">
+			<strong>type</strong>
+		</th>
+		<th align="left">
+			<strong>property</strong>
+		</th>
+		<th align="left">
+			<strong>default</strong>
+		</th>
+		<th align="left">
+			<strong>serializable</strong>
+		</th>
+		<th align="left">
+			<strong>required</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boxAPI.src.collaboration</code>
+		</td>
+		<td>
+			<strong><a href="box.html#collaborationService()">collaborationService</A></strong>
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">returntype = any</li>
+				
+				<li class="label label-default label-annotations">access = public</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="box.html#defaultUserID()">defaultUserID</A></strong>
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">returntype = any</li>
+				
+				<li class="label label-default label-annotations">access = public</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boxAPI.src.file</code>
+		</td>
+		<td>
+			<strong><a href="box.html#fileService()">fileService</A></strong>
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">returntype = any</li>
+				
+				<li class="label label-default label-annotations">access = public</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boxAPI.src.folder</code>
+		</td>
+		<td>
+			<strong><a href="box.html#folderService()">folderService</A></strong>
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">returntype = any</li>
+				
+				<li class="label label-default label-annotations">access = public</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boxAPI.src.search</code>
+		</td>
+		<td>
+			<strong><a href="box.html#searchService()">searchService</A></strong>
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">returntype = any</li>
+				
+				<li class="label label-default label-annotations">access = public</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boxAPI.src.uploadSession</code>
+		</td>
+		<td>
+			<strong><a href="box.html#uploadSessionService()">uploadSessionService</A></strong>
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">returntype = any</li>
+				
+				<li class="label label-default label-annotations">access = public</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boxAPI.src.user</code>
+		</td>
+		<td>
+			<strong><a href="box.html#userService()">userService</A></strong>
+			<br>
+			
+			<br><br>
+			<ul>
+			
+				<li class="label label-default label-annotations">returntype = any</li>
+				
+				<li class="label label-default label-annotations">access = public</li>
+				
+			</ul>
+
+		</td>
+		<td align="right" valign="top" width="1%">
+			
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				true
+			</code>
+		</td>
+		<td align="right" valign="top" width="1%">
+			<code>
+				false
+			</code>
+		</td>
+	</tr>
+	
+	</tr>
+</table>
+
+	<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+
+	<a name="constructor_summary"><!-- --></a>
+	<table class="table table-bordered table-hover">
+		<tr class="info">
+			<th align="left" colspan="2">
+				<strong>Constructor Summary</strong>
+			</th>
+		</tr>
+		<tr>
+			
+			<td>
+				<strong><a href="box.html#init()">init</A></strong>(string defaultUserID='')
+				<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Constructor.
+				
+			</td>
+		</tr>
+	</table>
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<a name="method_summary"><!-- --></a>
+<table class="table table-bordered table-hover">
+	<tr class="info">
+		<th align="left" colspan="2">
+			<strong>Method Summary</strong>
+		</th>
+	</tr>
+
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boxAPI.src.collaboration</code>
+		</td>
+		<td>
+			<strong><a href="box.html#GETCOLLABORATIONSERVICE()">GETCOLLABORATIONSERVICE</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>string</code>
+		</td>
+		<td>
+			<strong><a href="box.html#GETDEFAULTUSERID()">GETDEFAULTUSERID</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boxAPI.src.file</code>
+		</td>
+		<td>
+			<strong><a href="box.html#GETFILESERVICE()">GETFILESERVICE</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boxAPI.src.folder</code>
+		</td>
+		<td>
+			<strong><a href="box.html#GETFOLDERSERVICE()">GETFOLDERSERVICE</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boxAPI.src.search</code>
+		</td>
+		<td>
+			<strong><a href="box.html#GETSEARCHSERVICE()">GETSEARCHSERVICE</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boxAPI.src.uploadSession</code>
+		</td>
+		<td>
+			<strong><a href="box.html#GETUPLOADSESSIONSERVICE()">GETUPLOADSESSIONSERVICE</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>boxAPI.src.user</code>
+		</td>
+		<td>
+			<strong><a href="box.html#GETUSERSERVICE()">GETUSERSERVICE</A></strong>()
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../boxAPI/src/box.html" title="class in boxAPI.src">box</a></code>
+		</td>
+		<td>
+			<strong><a href="box.html#SETCOLLABORATIONSERVICE()">SETCOLLABORATIONSERVICE</A></strong>(boxAPI.src.collaboration collaborationService)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../boxAPI/src/box.html" title="class in boxAPI.src">box</a></code>
+		</td>
+		<td>
+			<strong><a href="box.html#SETDEFAULTUSERID()">SETDEFAULTUSERID</A></strong>(string defaultUserID)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../boxAPI/src/box.html" title="class in boxAPI.src">box</a></code>
+		</td>
+		<td>
+			<strong><a href="box.html#SETFILESERVICE()">SETFILESERVICE</A></strong>(boxAPI.src.file fileService)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../boxAPI/src/box.html" title="class in boxAPI.src">box</a></code>
+		</td>
+		<td>
+			<strong><a href="box.html#SETFOLDERSERVICE()">SETFOLDERSERVICE</A></strong>(boxAPI.src.folder folderService)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../boxAPI/src/box.html" title="class in boxAPI.src">box</a></code>
+		</td>
+		<td>
+			<strong><a href="box.html#SETSEARCHSERVICE()">SETSEARCHSERVICE</A></strong>(boxAPI.src.search searchService)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../boxAPI/src/box.html" title="class in boxAPI.src">box</a></code>
+		</td>
+		<td>
+			<strong><a href="box.html#SETUPLOADSESSIONSERVICE()">SETUPLOADSESSIONSERVICE</A></strong>(boxAPI.src.uploadSession uploadSessionService)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code><a href="../../boxAPI/src/box.html" title="class in boxAPI.src">box</a></code>
+		</td>
+		<td>
+			<strong><a href="box.html#SETUSERSERVICE()">SETUSERSERVICE</A></strong>(boxAPI.src.user userService)
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#copyFile()">copyFile</A></strong>(string fileName, string ParentID='0', string SourceID, string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#copyFolder()">copyFolder</A></strong>(string folderName, string ParentID='0', string SourceID, string asUserID='[runtime expression]', boolean returnID='1')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#createAppUser()">createAppUser</A></strong>(string userName, string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#createCollaboration()">createCollaboration</A></strong>(string itemBoxID, string accessibleByBoxID, string accessibleType='user', string role='editor', string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#createFileUploadSession()">createFileUploadSession</A></strong>(string fileID, string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#createFolder()">createFolder</A></strong>(string folderName, string ParentID='0', string asUserID='[runtime expression]', boolean returnID='1')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#createUploadSession()">createUploadSession</A></strong>(string fileName, string filePath, string ParentID='0', string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#deleteFile()">deleteFile</A></strong>(string fileID, string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#deleteFileVersion()">deleteFileVersion</A></strong>(string fileID, string versionID, string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#deleteFolder()">deleteFolder</A></strong>(string folderID='0', string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#getCurrentUserInfo()">getCurrentUserInfo</A></strong>(string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#getFileCollaborations()">getFileCollaborations</A></strong>(string fileID, string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#getFileInfo()">getFileInfo</A></strong>(string fileID, string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#getFileVersion()">getFileVersion</A></strong>(string fileID, string versionID, string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#getFolderCollaborations()">getFolderCollaborations</A></strong>(string folderID='0', string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#getFolderContents()">getFolderContents</A></strong>(string folderID='0', string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#getFolderInfo()">getFolderInfo</A></strong>(string folderID='0', string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#getUploadSession()">getUploadSession</A></strong>(string uploadSessionID, string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#getUserInfo()">getUserInfo</A></strong>(string userID, string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#listFileVersions()">listFileVersions</A></strong>(string fileID, string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#moveFile()">moveFile</A></strong>(string fileID, string parentID='0', string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#moveFolder()">moveFolder</A></strong>(string folderID, [string parentID='0'], string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#renameFile()">renameFile</A></strong>(string fileName, string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#renameFolder()">renameFolder</A></strong>(string folderID, [string folderName], string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#revertFileVersion()">revertFileVersion</A></strong>(string fileID, string versionID, string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#searchForContent()">searchForContent</A></strong>(string query, string file_extensions='', string type='', numeric limit='', string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#setFileTags()">setFileTags</A></strong>(string fileID, array tags, string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#setFolderTags()">setFolderTags</A></strong>(string folderID, [array tags], string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#updateFile()">updateFile</A></strong>(string fileID, [string fileName], [string parentID], [array tags], string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#updateFolder()">updateFolder</A></strong>(string folderID, [string folderName], [string parentID], [array tags], string asUserID='[runtime expression]')
+			<br>
+			
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top" width="1%">
+			<code>any</code>
+		</td>
+		<td>
+			<strong><a href="box.html#uploadFile()">uploadFile</A></strong>(string fileName, string filePath, string ParentID='0', string fileID='', boolean preflight='0', string asUserID='[runtime expression]', boolean returnIDOnly='1')
+			<br>
+			
+		</td>
+	</tr>
+	
+</table>
+
+
+
+<a name="inherited_methods"><!-- --></a>
+
+
+	&nbsp;
+	<a name="methods_inherited_from_class_WEB-INF.cftags.component"><!-- --></a>
+	<table class="table table-hover table-bordered">
+		<tr class="info">
+			<th align="left">
+				<strong>Methods inherited from class <kbd>WEB-INF.cftags.component</kbd></strong>
+			</th>
+		</tr>
+		<tr>
+			<td>
+				
+					<span class="label label-warning"><em>None</em></span>
+				
+			</td>
+		</tr>
+	</table>
+
+
+<hr>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+	<a name="constructor_detail"><!-- --></a>
+	<table class="table table-bordered">
+		<tr class="info">
+			<th colspan="1" align="left">
+				<strong>Constructor Detail</strong>
+			</th>
+		</tr>
+	</table>
+
+	<a name="init()"><!-- --></a><h3>
+	init</h3>
+	<kbd>public <strong>init</strong>(string defaultUserID='')</kbd>
+
+	<br><br>
+
+	
+	<p>Constructor</p>
+	
+	<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+			<dd><code>defaultUserID</code> - The user to be used if no user is passed in.</dd>
+		
+	</dl>
+	
+	<hr>
+
+
+<!-- ============ PROPERTY DETAIL ========== -->
+
+	<a name="property_detail"><!-- --></a>
+	<table class="table table-bordered">
+		<tr class="info">
+			<th colspan="1" align="left">
+				<strong>Property Detail</strong>
+			</th>
+		</tr>
+	</table>
+
+	
+		<a name="collaborationService()"><!-- --></a>
+		<h3>collaborationService</h3>
+
+		<kbd>
+			property boxAPI.src.collaboration <strong>collaborationService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>returntype</code> - any</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>access</code> - public</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="defaultUserID()"><!-- --></a>
+		<h3>defaultUserID</h3>
+
+		<kbd>
+			property string <strong>defaultUserID</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>returntype</code> - any</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>access</code> - public</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="fileService()"><!-- --></a>
+		<h3>fileService</h3>
+
+		<kbd>
+			property boxAPI.src.file <strong>fileService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>returntype</code> - any</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>access</code> - public</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="folderService()"><!-- --></a>
+		<h3>folderService</h3>
+
+		<kbd>
+			property boxAPI.src.folder <strong>folderService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>returntype</code> - any</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>access</code> - public</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="searchService()"><!-- --></a>
+		<h3>searchService</h3>
+
+		<kbd>
+			property boxAPI.src.search <strong>searchService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>returntype</code> - any</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>access</code> - public</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="uploadSessionService()"><!-- --></a>
+		<h3>uploadSessionService</h3>
+
+		<kbd>
+			property boxAPI.src.uploadSession <strong>uploadSessionService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>returntype</code> - any</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>access</code> - public</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+		<a name="userService()"><!-- --></a>
+		<h3>userService</h3>
+
+		<kbd>
+			property boxAPI.src.user <strong>userService</strong> 
+		</kbd>
+
+		<br><br>
+		
+
+		<dl>
+		<dt><strong>Attributes:</strong></dt>
+		
+			<dd><code>returntype</code> - any</dd>
+			
+			<dd><code>required</code> - false</dd>
+			
+			<dd><code>access</code> - public</dd>
+			
+			<dd><code>serializable</code> - true</dd>
+			
+		</dl>
+
+		<hr>
+	
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<a name="method_detail"><!-- --></a>
+<table class="table table-bordered">
+	<tr class="info">
+		<th colspan="1" align="left">
+			<strong>Method Detail</strong>
+		</th>
+	</tr>
+</table>
+
+
+	<a name="GETCOLLABORATIONSERVICE()"><!-- --></a>
+	<h3>
+		GETCOLLABORATIONSERVICE 
+	</h3>
+
+	<kbd>public boxAPI.src.collaboration <strong>GETCOLLABORATIONSERVICE</strong>()</kbd>
+
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETDEFAULTUSERID()"><!-- --></a>
+	<h3>
+		GETDEFAULTUSERID 
+	</h3>
+
+	<kbd>public string <strong>GETDEFAULTUSERID</strong>()</kbd>
+
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETFILESERVICE()"><!-- --></a>
+	<h3>
+		GETFILESERVICE 
+	</h3>
+
+	<kbd>public boxAPI.src.file <strong>GETFILESERVICE</strong>()</kbd>
+
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETFOLDERSERVICE()"><!-- --></a>
+	<h3>
+		GETFOLDERSERVICE 
+	</h3>
+
+	<kbd>public boxAPI.src.folder <strong>GETFOLDERSERVICE</strong>()</kbd>
+
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETSEARCHSERVICE()"><!-- --></a>
+	<h3>
+		GETSEARCHSERVICE 
+	</h3>
+
+	<kbd>public boxAPI.src.search <strong>GETSEARCHSERVICE</strong>()</kbd>
+
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETUPLOADSESSIONSERVICE()"><!-- --></a>
+	<h3>
+		GETUPLOADSESSIONSERVICE 
+	</h3>
+
+	<kbd>public boxAPI.src.uploadSession <strong>GETUPLOADSESSIONSERVICE</strong>()</kbd>
+
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="GETUSERSERVICE()"><!-- --></a>
+	<h3>
+		GETUSERSERVICE 
+	</h3>
+
+	<kbd>public boxAPI.src.user <strong>GETUSERSERVICE</strong>()</kbd>
+
+	<br><br>
+
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETCOLLABORATIONSERVICE()"><!-- --></a>
+	<h3>
+		SETCOLLABORATIONSERVICE 
+	</h3>
+
+	<kbd>public <a href="../../boxAPI/src/box.html" title="class in boxAPI.src">box</a> <strong>SETCOLLABORATIONSERVICE</strong>(boxAPI.src.collaboration collaborationService)</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>collaborationService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETDEFAULTUSERID()"><!-- --></a>
+	<h3>
+		SETDEFAULTUSERID 
+	</h3>
+
+	<kbd>public <a href="../../boxAPI/src/box.html" title="class in boxAPI.src">box</a> <strong>SETDEFAULTUSERID</strong>(string defaultUserID)</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>defaultUserID</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETFILESERVICE()"><!-- --></a>
+	<h3>
+		SETFILESERVICE 
+	</h3>
+
+	<kbd>public <a href="../../boxAPI/src/box.html" title="class in boxAPI.src">box</a> <strong>SETFILESERVICE</strong>(boxAPI.src.file fileService)</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETFOLDERSERVICE()"><!-- --></a>
+	<h3>
+		SETFOLDERSERVICE 
+	</h3>
+
+	<kbd>public <a href="../../boxAPI/src/box.html" title="class in boxAPI.src">box</a> <strong>SETFOLDERSERVICE</strong>(boxAPI.src.folder folderService)</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>folderService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETSEARCHSERVICE()"><!-- --></a>
+	<h3>
+		SETSEARCHSERVICE 
+	</h3>
+
+	<kbd>public <a href="../../boxAPI/src/box.html" title="class in boxAPI.src">box</a> <strong>SETSEARCHSERVICE</strong>(boxAPI.src.search searchService)</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>searchService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETUPLOADSESSIONSERVICE()"><!-- --></a>
+	<h3>
+		SETUPLOADSESSIONSERVICE 
+	</h3>
+
+	<kbd>public <a href="../../boxAPI/src/box.html" title="class in boxAPI.src">box</a> <strong>SETUPLOADSESSIONSERVICE</strong>(boxAPI.src.uploadSession uploadSessionService)</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>uploadSessionService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="SETUSERSERVICE()"><!-- --></a>
+	<h3>
+		SETUSERSERVICE 
+	</h3>
+
+	<kbd>public <a href="../../boxAPI/src/box.html" title="class in boxAPI.src">box</a> <strong>SETUSERSERVICE</strong>(boxAPI.src.user userService)</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>userService</code></dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="copyFile()"><!-- --></a>
+	<h3>
+		copyFile 
+	</h3>
+
+	<kbd>public any <strong>copyFile</strong>(string fileName, string ParentID='0', string SourceID, string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileName</code> - Name of the newly created file.</dd>
+		
+		<dd><code>ParentID</code> - BoxID of folder new file will be created in.</dd>
+		
+		<dd><code>SourceID</code> - BoxID of folder to be copied.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="copyFolder()"><!-- --></a>
+	<h3>
+		copyFolder 
+	</h3>
+
+	<kbd>public any <strong>copyFolder</strong>(string folderName, string ParentID='0', string SourceID, string asUserID='[runtime expression]', boolean returnID='1')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>folderName</code> - Name of the newly created folder.</dd>
+		
+		<dd><code>ParentID</code> - BoxID of folder new folder will be created in.</dd>
+		
+		<dd><code>SourceID</code> - BoxID of folder to be copied.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		<dd><code>returnID</code> - If true, only the BoxID of the folder is returned. if false, the whole api response is returned</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="createAppUser()"><!-- --></a>
+	<h3>
+		createAppUser 
+	</h3>
+
+	<kbd>public any <strong>createAppUser</strong>(string userName, string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>userName</code> - Name of user to create</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="createCollaboration()"><!-- --></a>
+	<h3>
+		createCollaboration 
+	</h3>
+
+	<kbd>public any <strong>createCollaboration</strong>(string itemBoxID, string accessibleByBoxID, string accessibleType='user', string role='editor', string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>itemBoxID</code> - The ID of the file or folder that access is granted to</dd>
+		
+		<dd><code>accessibleByBoxID</code> - The ID of the user or group that is granted access</dd>
+		
+		<dd><code>accessibleType</code> - [user] or [group]</dd>
+		
+		<dd><code>role</code> - The level of access granted. Can be [editor], [viewer], [previewer], [uploader], [previewer uploader], [viewer uploader], or [co-owner].</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="createFileUploadSession()"><!-- --></a>
+	<h3>
+		createFileUploadSession 
+	</h3>
+
+	<kbd>public any <strong>createFileUploadSession</strong>(string fileID, string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileID</code> - BoxID of file to delete.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="createFolder()"><!-- --></a>
+	<h3>
+		createFolder 
+	</h3>
+
+	<kbd>public any <strong>createFolder</strong>(string folderName, string ParentID='0', string asUserID='[runtime expression]', boolean returnID='1')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>folderName</code> - Name of the newly created folder.</dd>
+		
+		<dd><code>ParentID</code> - BoxID of folder new folder will be created in.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		<dd><code>returnID</code> - If true, only the BoxID of the folder is returned. if false, the whole api response is returned</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="createUploadSession()"><!-- --></a>
+	<h3>
+		createUploadSession 
+	</h3>
+
+	<kbd>public any <strong>createUploadSession</strong>(string fileName, string filePath, string ParentID='0', string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileName</code> - Name of uploaded file.</dd>
+		
+		<dd><code>filePath</code> - Path to file to be uploaded.</dd>
+		
+		<dd><code>ParentID</code> - BoxID of folder to upload file to.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="deleteFile()"><!-- --></a>
+	<h3>
+		deleteFile 
+	</h3>
+
+	<kbd>public any <strong>deleteFile</strong>(string fileID, string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileID</code> - BoxID of file to delete.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="deleteFileVersion()"><!-- --></a>
+	<h3>
+		deleteFileVersion 
+	</h3>
+
+	<kbd>public any <strong>deleteFileVersion</strong>(string fileID, string versionID, string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileID</code> - BoxID of file to delete.</dd>
+		
+		<dd><code>versionID</code> - Version number to delete.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="deleteFolder()"><!-- --></a>
+	<h3>
+		deleteFolder 
+	</h3>
+
+	<kbd>public any <strong>deleteFolder</strong>(string folderID='0', string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>folderID</code> - BoxID of folder to delete.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getCurrentUserInfo()"><!-- --></a>
+	<h3>
+		getCurrentUserInfo 
+	</h3>
+
+	<kbd>public any <strong>getCurrentUserInfo</strong>(string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getFileCollaborations()"><!-- --></a>
+	<h3>
+		getFileCollaborations 
+	</h3>
+
+	<kbd>public any <strong>getFileCollaborations</strong>(string fileID, string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileID</code> - BoxID of file to delete.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getFileInfo()"><!-- --></a>
+	<h3>
+		getFileInfo 
+	</h3>
+
+	<kbd>public any <strong>getFileInfo</strong>(string fileID, string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileID</code> - BoxID of file to get info of.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getFileVersion()"><!-- --></a>
+	<h3>
+		getFileVersion 
+	</h3>
+
+	<kbd>public any <strong>getFileVersion</strong>(string fileID, string versionID, string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileID</code> - BoxID of file to delete.</dd>
+		
+		<dd><code>versionID</code> - Version number to retrieve.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getFolderCollaborations()"><!-- --></a>
+	<h3>
+		getFolderCollaborations 
+	</h3>
+
+	<kbd>public any <strong>getFolderCollaborations</strong>(string folderID='0', string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>folderID</code> - BoxID of folder to delete.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getFolderContents()"><!-- --></a>
+	<h3>
+		getFolderContents 
+	</h3>
+
+	<kbd>public any <strong>getFolderContents</strong>(string folderID='0', string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>folderID</code> - BoxID of folder to get contents of.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getFolderInfo()"><!-- --></a>
+	<h3>
+		getFolderInfo 
+	</h3>
+
+	<kbd>public any <strong>getFolderInfo</strong>(string folderID='0', string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>folderID</code> - BoxID of folder to get info of.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getUploadSession()"><!-- --></a>
+	<h3>
+		getUploadSession 
+	</h3>
+
+	<kbd>public any <strong>getUploadSession</strong>(string uploadSessionID, string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>uploadSessionID</code> - </dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="getUserInfo()"><!-- --></a>
+	<h3>
+		getUserInfo 
+	</h3>
+
+	<kbd>public any <strong>getUserInfo</strong>(string userID, string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>userID</code> - BoxID of user to get info of.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="listFileVersions()"><!-- --></a>
+	<h3>
+		listFileVersions 
+	</h3>
+
+	<kbd>public any <strong>listFileVersions</strong>(string fileID, string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileID</code> - BoxID of file to delete.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="moveFile()"><!-- --></a>
+	<h3>
+		moveFile 
+	</h3>
+
+	<kbd>public any <strong>moveFile</strong>(string fileID, string parentID='0', string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileID</code> - BoxID of file to update.</dd>
+		
+		<dd><code>parentID</code> - BoxID of folder to move the file to.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="moveFolder()"><!-- --></a>
+	<h3>
+		moveFolder 
+	</h3>
+
+	<kbd>public any <strong>moveFolder</strong>(string folderID, [string parentID='0'], string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>folderID</code> - BoxID of folder to update.</dd>
+		
+		<dd><code>parentID</code> - BoxID of folder to move the folder to.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="renameFile()"><!-- --></a>
+	<h3>
+		renameFile 
+	</h3>
+
+	<kbd>public any <strong>renameFile</strong>(string fileName, string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileName</code> - Name to change the file to.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="renameFolder()"><!-- --></a>
+	<h3>
+		renameFolder 
+	</h3>
+
+	<kbd>public any <strong>renameFolder</strong>(string folderID, [string folderName], string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>folderID</code> - BoxID of folder to update.</dd>
+		
+		<dd><code>folderName</code> - Name to change the folder to.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="revertFileVersion()"><!-- --></a>
+	<h3>
+		revertFileVersion 
+	</h3>
+
+	<kbd>public any <strong>revertFileVersion</strong>(string fileID, string versionID, string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileID</code> - BoxID of file to delete.</dd>
+		
+		<dd><code>versionID</code> - Version number to revert to.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="searchForContent()"><!-- --></a>
+	<h3>
+		searchForContent 
+	</h3>
+
+	<kbd>public any <strong>searchForContent</strong>(string query, string file_extensions='', string type='', numeric limit='', string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>query</code> - The string to search for. Box matches the search string against object names, descriptions, text contents of files, and other data.</dd>
+		
+		<dd><code>file_extensions</code> - Limit searches to specific file extensions like [pdf], [png], or [doc]. The value can be a single file extension or a comma-delimited list of extensions. For example: [png,md,pdf]</dd>
+		
+		<dd><code>type</code> - The type of objects you want to include in the search results. The type can be [file], [folder], or [web_link].</dd>
+		
+		<dd><code>limit</code> - The maximum number of items to return. The default is 30 and the maximum is 200.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setFileTags()"><!-- --></a>
+	<h3>
+		setFileTags 
+	</h3>
+
+	<kbd>public any <strong>setFileTags</strong>(string fileID, array tags, string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileID</code> - BoxID of file to update.</dd>
+		
+		<dd><code>tags</code> - Array of strings. These tags will by applied to the file.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="setFolderTags()"><!-- --></a>
+	<h3>
+		setFolderTags 
+	</h3>
+
+	<kbd>public any <strong>setFolderTags</strong>(string folderID, [array tags], string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>folderID</code> - BoxID of folder to update.</dd>
+		
+		<dd><code>tags</code> - Array of strings. These tags will by applied to the folder.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="updateFile()"><!-- --></a>
+	<h3>
+		updateFile 
+	</h3>
+
+	<kbd>public any <strong>updateFile</strong>(string fileID, [string fileName], [string parentID], [array tags], string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileID</code> - BoxID of file to update.</dd>
+		
+		<dd><code>fileName</code> - Name to change the file to.</dd>
+		
+		<dd><code>parentID</code> - BoxID of folder to move the file to.</dd>
+		
+		<dd><code>tags</code> - Array of strings. These tags will by applied to the file.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="updateFolder()"><!-- --></a>
+	<h3>
+		updateFolder 
+	</h3>
+
+	<kbd>public any <strong>updateFolder</strong>(string folderID, [string folderName], [string parentID], [array tags], string asUserID='[runtime expression]')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>folderID</code> - BoxID of folder to update.</dd>
+		
+		<dd><code>folderName</code> - Name to change the folder to.</dd>
+		
+		<dd><code>parentID</code> - BoxID of folder to move the folder to.</dd>
+		
+		<dd><code>tags</code> - Array of strings. These tags will by applied to the folder.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+	<a name="uploadFile()"><!-- --></a>
+	<h3>
+		uploadFile 
+	</h3>
+
+	<kbd>public any <strong>uploadFile</strong>(string fileName, string filePath, string ParentID='0', string fileID='', boolean preflight='0', string asUserID='[runtime expression]', boolean returnIDOnly='1')</kbd>
+
+	<br><br>
+
+	
+		<dl>
+		<dt><strong>Parameters:</strong></dt>
+		
+		<dd><code>fileName</code> - Name of uploaded file.</dd>
+		
+		<dd><code>filePath</code> - Path to file to be uploaded.</dd>
+		
+		<dd><code>ParentID</code> - BoxID of folder to upload file to.</dd>
+		
+		<dd><code>fileID</code> - BoxID of file to update the version of.</dd>
+		
+		<dd><code>preflight</code> - Performs a Preflight check, to see if uploading the file would be successful.</dd>
+		
+		<dd><code>asUserID</code> - BoxID of user to perform action on behalf of.</dd>
+		
+		<dd><code>returnIDOnly</code> - If true, only the BoxID of the file is returned. if false, the whole api response is returned</dd>
+		
+		</dl>
+	
+
+	</dl>
+	<hr>
+
+
+
+</body>
+</html>
