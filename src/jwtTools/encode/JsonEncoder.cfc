@@ -1,4 +1,4 @@
-<cfcomponent name="JsonEncoder" output="false" hint="I encode and decode values using JavaScript Object Notation (JSON).">
+<cfcomponent output="false" hint="I encode and decode values using JavaScript Object Notation (JSON).">
 
 	<cffunction name="init" access="public" returntype="any" output="false" hint="I initialize the JSON encoder.">
 		<cfreturn this />

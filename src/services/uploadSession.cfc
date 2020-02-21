@@ -1,4 +1,4 @@
-<cfcomponent name="uploadSession" output="false" hint="Box service layer for upload session objects.">
+<cfcomponent output="false" hint="Box service layer for upload session objects.">
 
 	<cfset this.objectName = "files/upload_sessions" />
 

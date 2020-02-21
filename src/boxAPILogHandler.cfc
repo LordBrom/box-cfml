@@ -1,4 +1,4 @@
-<cfcomponent name="boxAPILogHandler" output="false" hint="Submits api log information to the database">
+<cfcomponent output="false" hint="Submits api log information to the database">
 
 	<cffunction name="init" returntype="boxAPILogHandler" access="public" output="false" hint="Constructor">
 		<cfargument name="datasource"  type="string"  required="true" default=""      hint="" />

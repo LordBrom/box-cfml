@@ -1,4 +1,4 @@
-<cfcomponent name="box" output="false" accessors="true" hint="Box service layer.">
+<cfcomponent output="false" accessors="true" hint="Box service layer.">
 
 	<cfproperty name="defaultUserID"        type="string"        />
 
