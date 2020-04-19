@@ -22,10 +22,16 @@
 
 
 
+		<cfwebsocket name="ws"
+					 onmessage="parseMessage"
+					 subscribeto="box" />
+
+		<script type="text/javascript">
+			$(window).ready(function(){
+				setTimeout(function(){showChildren('#url.folderID#')}, 1000);
+			})
+		</script>
 	</cfoutput>
-	<cfwebsocket name="ws"
-				 onmessage="parseMessage"
-				 subscribeto="box" />
 </body>
 </html>
 

@@ -13,12 +13,10 @@ var parseMessage = function(wsPackage) {
 
 		case "setFolders":
 			var folderData = JSON.parse(data.MSG);
-			console.log(folderData)
 			setFolders(folderData.FOLDERID, folderData.CHILDARRAY);
 			break;
 
 		default:
-			console.log(wsPackage)
 			break;
 	}
 }
