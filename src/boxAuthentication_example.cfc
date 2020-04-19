@@ -66,4 +66,9 @@
 		<cfreturn "00000000000000000000000000000000" />
 	</cffunction>
 
+	<cffunction name="getDefaultUserID" access="public" returntype="string" output="false" hint="">
+		<cfset local.return = "0000000000" />
+		<cfreturn local.return />
+	</cffunction>
+
 </cfcomponent>

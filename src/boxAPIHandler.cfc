@@ -18,20 +18,22 @@
 		<cfset variables.expires_in   = "" />
 		<cfset variables.issued_at    = "" />
 
+		<cfset variables.defaultUserID = variables.boxAuth.getDefaultUserID() />
+
 		<cfreturn this />
 	</cffunction>
 
 	<cffunction name="makeRequest"      returntype="any"    access="public" output="false" hint="">
-		<cfargument name="object"      type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; Object to affect ex. [files],[folders],[users]..." />
-		<cfargument name="objectID"    type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; BoxID of object being affected. " />
-		<cfargument name="method"      type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; Action to be taken on the object. " />
-		<cfargument name="queryParams" type="string"  required="true" default=""              hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; Additional url parameters. " />
-		<cfargument name="jsonBody"    type="struct"  required="true" default="#structNew()#" hint="Parameters to be passed as http body, or formfield for file upload." />
-		<cfargument name="httpMethod"  type="string"  required="true" default="POST"          hint="cfhttp request method. GET,POST,PUT,DELETE,HEAD,TRACE,OPTIONS,PATCH" />
-		<cfargument name="userID"      type="string"  required="true" default=""              hint="Box user ID of who the action is being taken on behalf of" />
-		<cfargument name="filePath"    type="string"  required="true" default=""              hint="Path to a file to be uploaded" />
-		<cfargument name="getasbinary" type="string"  required="true" default="no"            hint="If true, cfhttp request returns binary." />
-		<cfargument name="debug"       type="boolean" required="true" default="false"         hint="" />
+		<cfargument name="object"      type="string"  required="true" default=""                          hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; Object to affect ex. [files],[folders],[users]..." />
+		<cfargument name="objectID"    type="string"  required="true" default=""                          hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; BoxID of object being affected. " />
+		<cfargument name="method"      type="string"  required="true" default=""                          hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; Action to be taken on the object. " />
+		<cfargument name="queryParams" type="string"  required="true" default=""                          hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; Additional url parameters. " />
+		<cfargument name="jsonBody"    type="struct"  required="true" default="#structNew()#"             hint="Parameters to be passed as http body, or formfield for file upload." />
+		<cfargument name="httpMethod"  type="string"  required="true" default="POST"                      hint="cfhttp request method. GET,POST,PUT,DELETE,HEAD,TRACE,OPTIONS,PATCH" />
+		<cfargument name="userID"      type="string"  required="true" default="" hint="Box user ID of who the action is being taken on behalf of" />
+		<cfargument name="filePath"    type="string"  required="true" default=""                          hint="Path to a file to be uploaded" />
+		<cfargument name="getasbinary" type="string"  required="true" default="no"                        hint="If true, cfhttp request returns binary." />
+		<cfargument name="debug"       type="boolean" required="true" default="false"                     hint="" />
 
 		<cfset local.return = structNew() />
 		<cfset local.httpParams = arrayNew(1) />
@@ -42,8 +44,11 @@
 		</cfif>
 
 		<cfset arrayAppend(local.httpParams, { "type": "Header", "name": "Authorization", "value": variables.access_token }) />
-		<cfif len(userID)>
+
+		<cfif len(arguments.userID)>
 			<cfset arrayAppend(local.httpParams, { "type": "Header", "name": "As-User", "value": arguments.userID }) />
+		<cfelseif len(variables.defaultUserID) >
+			<cfset arrayAppend(local.httpParams, { "type": "Header", "name": "As-User", "value": variables.defaultUserID }) />
 		</cfif>
 
 		<cfif arguments.object EQ "files/upload_sessions" AND arguments.httpMethod NEQ 'GET'>
