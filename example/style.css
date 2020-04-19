@@ -1,0 +1,35 @@
+#container {
+	width: 700px;
+	height: 500px;
+	border: 1px solid #969696;
+	overflow-y: scroll;
+}
+
+
+ul.childContainer:not(.open) {
+	display: none;
+}
+
+ul {
+    margin: 0;
+    padding-left: 20px;
+	list-style: none;
+}
+
+li {
+	border-bottom: 1px solid black;
+	padding: 10px 25px;
+}
+
+li.folder {
+	cursor: pointer;
+	list-style: "\25B2";
+
+}
+li.folder.open {
+	list-style: "\25BC";
+
+}
+li.file {
+
+}
