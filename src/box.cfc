@@ -74,6 +74,15 @@
 		<cfreturn local.return />
 	</cffunction>
 
+	<cffunction name="downloadFile"                access="public" returntype="any" output="false" hint="">
+		<cfargument name="fileID"   type="string" required="true"            hint="BoxID of file to download." />
+		<cfargument name="asUserID" type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
+
+		<cfset local.return = getFileService().download( argumentCollection = arguments ) />
+
+		<cfreturn local.return />
+	</cffunction>
+
 	<cffunction name="getFileInfo"             access="public" returntype="any" output="false" hint="">
 		<cfargument name="fileID"   type="string" required="true"            hint="BoxID of file to get info of." />
 		<cfargument name="asUserID" type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
