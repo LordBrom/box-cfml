@@ -39,6 +39,22 @@
 		<cfreturn local.apiResponse />
 	</cffunction>
 
+	<cffunction name="download" access="public" returntype="struct" output="false" hint="">
+		<cfargument name="fileID"    type="string"  required="true" hint="BoxID of file to download." />
+		<cfargument name="asUserID"  type="string"  required="true" hint="BoxID of user to perform action on behalf of." />
+
+		<cfset local.apiResponse = variables.boxAPIHandler.makeRequest(
+			object     = this.objectName,
+			objectID   = arguments.fileID,
+			method     = "content",
+			httpMethod = "GET",
+			userID     = arguments.asUserID,
+			getasbinary = "YES"
+		) />
+
+		<cfreturn local.apiResponse />
+	</cffunction>
+
 	<cffunction name="getInfo" access="public" returntype="struct" output="false" hint="">
 		<cfargument name="fileID"   type="string" required="true" hint="BoxID of file to get info of." />
 		<cfargument name="asUserID" type="string" required="true" hint="BoxID of user to perform action on behalf of." />
