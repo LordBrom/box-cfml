@@ -1,2 +1,3 @@
-# BoxDriveAPI
-A ColdFusion service used to communicate with Box Drive file storage.
+# box-cfml
+
+**box-cfml** is a CFML library for interacting with the Box API.
