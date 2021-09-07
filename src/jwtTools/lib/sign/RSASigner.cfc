@@ -150,7 +150,7 @@ component
 				.generatePrivate( privateKeySpec )
 			;
 
-		} catch (exType exName) {
+		} catch (any e) {
 			if (firstAttempt) {
 				addBouncyCastleProvider();
 				return( setPrivateKeyFromText(newPrivateKeyText, false) );

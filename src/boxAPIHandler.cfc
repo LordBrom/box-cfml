@@ -6,7 +6,10 @@ component output="false" hint="Contains functions that interact with the Box.com
 	this.boxAPIUploadURL = "https://upload.box.com/api/"; //  used for file upload only
 	this.boxAPIVersion   = "2.0";
 
-	public boxAPIHandler function init(required string boxAPIlogDatasource="", required string boxAPIlogTableName="") output=false {
+	public boxAPIHandler function init(
+		required string boxAPIlogDatasource="",
+		required string boxAPIlogTableName=""
+	) output=false {
 		variables.boxAuth = createObject("component", "boxAuthentication");
 		variables.JWT     = createObject("component", "jwtTools.lib.JsonWebTokens");
 
@@ -22,7 +25,18 @@ component output="false" hint="Contains functions that interact with the Box.com
 		return this;
 	}
 
-	public any function makeRequest(required string object="", required string objectID="", required string method="", required string queryParams="", required struct jsonBody="#structNew()#", required string httpMethod="POST", required string userID="", required string filePath="", required string getasbinary="no", required boolean debug="false") output=false {
+	public any function makeRequest(
+		required string object="",
+		required string objectID="",
+		required string method="",
+		required string queryParams="",
+		required struct jsonBody="#structNew()#",
+		required string httpMethod="POST",
+		required string userID="",
+		required string filePath="",
+		required string getasbinary="no",
+		required boolean debug="false"
+	) output=false {
 		local.return = structNew();
 		local.httpParams = arrayNew(1);
 
@@ -135,7 +149,9 @@ component output="false" hint="Contains functions that interact with the Box.com
 	/**
 	 * perform the API Request to get the Auth Token
 	 */
-	private struct function getOAUTHToken(required string jwtAssertion) output=false {
+	private struct function getOAUTHToken(
+		required string jwtAssertion
+	) output=false {
 		local.url = "#this.boxAPIURL#oauth2/token";
 		local.httpParams = arrayNew(1);
 
@@ -157,7 +173,14 @@ component output="false" hint="Contains functions that interact with the Box.com
 	/**
 	 * send request to REST API
 	 */
-	private struct function send(required string url, required string method, required boolean getasbinary="no", required array httpParams="no", required boolean logCall="true", required boolean debug="false") output=false {
+	private struct function send(
+		required string url,
+		required string method,
+		required boolean getasbinary="no",
+		required array httpParams="no",
+		required boolean logCall="true",
+		required boolean debug="false"
+	) output=false {
 		local.logID = 0;
 
 		if ( structKeyExists(variables, "boxAPILog") && arguments.logCall ) {
@@ -200,7 +223,10 @@ component output="false" hint="Contains functions that interact with the Box.com
 	/**
 	 * parseResponse from Box API
 	 */
-	private struct function handleResponse(required struct response, required string url, string returnBinary="no") output=false {
+	private struct function handleResponse(
+		required struct response,
+		required string url, string returnBinary="no"
+	) output=false {
 		local.return = structNew();
 		local.return.success = false;
 		local.return.statusCode = arguments.response.statusCode;

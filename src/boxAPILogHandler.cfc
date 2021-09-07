@@ -3,7 +3,11 @@
  */
 component output="false" hint="Submits api log information to the database" {
 
-	public boxAPILogHandler function init(required string datasource="", required string tableName="", required boolean createTable="false") output=false {
+	public boxAPILogHandler function init(
+		required string datasource="",
+		required string tableName="",
+		required boolean createTable="false"
+	) output=false {
 		variables.datasource = arguments.datasource;
 		variables.tableName  = arguments.tableName;
 		if ( arguments.createTable ) {
@@ -15,7 +19,12 @@ component output="false" hint="Submits api log information to the database" {
 	/**
 	 * Adds a BoxAPI log record.
 	 */
-	public numeric function setLog(required string url, required string method, required boolean getasbinary="no", required array httpParams="no") output=false {
+	public numeric function setLog(
+		required string url,
+		required string method,
+		required boolean getasbinary="no",
+		required array httpParams="no"
+	) output=false {
 		local.return = -1;
 		try {
 			//  QUERY - INSERT
@@ -71,7 +80,8 @@ component output="false" hint="Submits api log information to the database" {
 	/**
 	 * Updates a log with response data.
 	 */
-	public void function updateLog(required numeric logID, string responseCode, any response) {
+	public void function updateLog(
+		required numeric logID, string responseCode, any response) {
 		try {
 			//  Update log event with response
 			cfquery( datasource=variables.datasource, result="local.update" ) { //Note: queryExecute() is the preferred syntax but this syntax is easier to convert generically
@@ -122,7 +132,8 @@ component output="false" hint="Submits api log information to the database" {
 	/**
 	 * Deletes a log.
 	 */
-	public void function hardDeleteLog(required numeric logID) {
+	public void function hardDeleteLog(
+		required numeric logID) {
 		try {
 			//  Update log event with response
 			cfquery( datasource=variables.datasource, result="local.update" ) { //Note: queryExecute() is the preferred syntax but this syntax is easier to convert generically
