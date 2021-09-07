@@ -4,12 +4,17 @@
 component output="false" hint="Box service layer for folder objects." {
 	this.objectName = "users";
 
-	public user function init(boxAPIHandler boxAPIHandler) output=false {
+	public user function init(
+		boxAPIHandler boxAPIHandler
+	) output=false {
 		variables.boxAPIHandler = arguments?.boxAPIHandler ?: createObject("component", "boxAPI.src.boxAPIHandler").init(  );
 		return this;
 	}
 
-	public any function getInfo(required string userID, required string asUserID) output=false {
+	public any function getInfo(
+		required string userID,
+		required string asUserID
+	) output=false {
 		local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
 			objectID   = arguments.userID,
@@ -19,7 +24,9 @@ component output="false" hint="Box service layer for folder objects." {
 		return local.apiResponse;
 	}
 
-	public any function getCurrentUserInfo(required string asUserID) output=false {
+	public any function getCurrentUserInfo(
+		required string asUserID
+	) output=false {
 		local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
 			method     = "me",
@@ -29,7 +36,10 @@ component output="false" hint="Box service layer for folder objects." {
 		return local.apiResponse;
 	}
 
-	public any function createAppUser(required string userName, required string asUserID) output=false {
+	public any function createAppUser(
+		required string userName,
+		required string asUserID
+	) output=false {
 		local.boxID = "";
 		local.jsonBody = structNew();
 		local.jsonBody['name'] = arguments.userName;

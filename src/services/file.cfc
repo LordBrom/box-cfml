@@ -4,12 +4,21 @@
 component output="false" hint="Box service layer for file objects." {
 	this.objectName = "files";
 
-	public file function init(boxAPIHandler boxAPIHandler) output=false {
+	public file function init(
+		boxAPIHandler boxAPIHandler
+	) output=false {
 		variables.boxAPIHandler = arguments?.boxAPIHandler ?: createObject("component", "boxAPI.src.boxAPIHandler").init(  );
 		return this;
 	}
 
-	public struct function upload(required string fileName, required string filePath, required string ParentID, required string fileID, required boolean preflight, required string asUserID) output=false {
+	public struct function upload(
+		required string fileName,
+		required string filePath,
+		required string ParentID,
+		required string fileID,
+		required boolean preflight,
+		required string asUserID
+	) output=false {
 		local.boxID = "";
 		local.jsonBody = structNew();
 		local.jsonBody['name']   = arguments.fileName;
@@ -28,7 +37,10 @@ component output="false" hint="Box service layer for file objects." {
 		return local.apiResponse;
 	}
 
-	public struct function download(required string fileID, required string asUserID) output=false {
+	public struct function download(
+		required string fileID,
+		required string asUserID
+	) output=false {
 		local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
 			objectID   = arguments.fileID,
@@ -40,7 +52,10 @@ component output="false" hint="Box service layer for file objects." {
 		return local.apiResponse;
 	}
 
-	public struct function getInfo(required string fileID, required string asUserID) output=false {
+	public struct function getInfo(
+		required string fileID,
+		required string asUserID
+	) output=false {
 		local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
 			objectID   = arguments.fileID,
@@ -50,7 +65,13 @@ component output="false" hint="Box service layer for file objects." {
 		return local.apiResponse;
 	}
 
-	public struct function update(required string fileID, string fileName, string parentID, array tags, required string asUserID) output=false {
+	public struct function update(
+		required string fileID,
+		string fileName,
+		string parentID,
+		array tags,
+		required string asUserID
+	) output=false {
 		local.return = structNew();
 		local.jsonBody = structNew();
 		if ( structKeyExists(arguments, "fileName") && len(arguments.fileName) ) {
@@ -73,7 +94,10 @@ component output="false" hint="Box service layer for file objects." {
 		return local.apiResponse;
 	}
 
-	public struct function delete(required string fileID, required string asUserID) output=false {
+	public struct function delete(
+		required string fileID,
+		required string asUserID
+	) output=false {
 		local.return = structNew();
 		local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
@@ -84,7 +108,12 @@ component output="false" hint="Box service layer for file objects." {
 		return local.apiResponse;
 	}
 
-	public struct function copy(required string fileName, required string ParentID, required string SourceID, required string asUserID) output=false {
+	public struct function copy(
+		required string fileName,
+		required string ParentID,
+		required string SourceID,
+		required string asUserID
+	) output=false {
 		local.boxID = "";
 		local.jsonBody = structNew();
 		local.jsonBody['name']   = arguments.fileName;
@@ -100,7 +129,10 @@ component output="false" hint="Box service layer for file objects." {
 		return local.apiResponse;
 	}
 
-	public struct function getCollaborations(required string fileID, required string asUserID) output=false {
+	public struct function getCollaborations(
+		required string fileID,
+		required string asUserID
+	) output=false {
 		local.return = structNew();
 		local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
@@ -112,7 +144,10 @@ component output="false" hint="Box service layer for file objects." {
 		return local.apiResponse;
 	}
 
-	public struct function createUploadSession(required string fileID, required string asUserID) output=false {
+	public struct function createUploadSession(
+		required string fileID,
+		required string asUserID
+	) output=false {
 		local.return = structNew();
 		local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
@@ -127,7 +162,10 @@ component output="false" hint="Box service layer for file objects." {
 	  --------------------------VERSION FUNCTIONS--------------------------
 	  ------------------------------------------------------------------*/
 
-	public struct function ListVersions(required string fileID, required string asUserID) output=false {
+	public struct function ListVersions(
+		required string fileID,
+		required string asUserID
+	) output=false {
 		local.return = structNew();
 		local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
@@ -139,7 +177,11 @@ component output="false" hint="Box service layer for file objects." {
 		return local.apiResponse;
 	}
 
-	public struct function getVersion(required string fileID, required string versionID, required string asUserID) output=false {
+	public struct function getVersion(
+		required string fileID,
+		required string versionID,
+		required string asUserID
+	) output=false {
 		local.return = structNew();
 		local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
@@ -151,7 +193,11 @@ component output="false" hint="Box service layer for file objects." {
 		return local.apiResponse;
 	}
 
-	public struct function revertVersion(required string fileID, required string versionID, required string asUserID) output=false {
+	public struct function revertVersion(
+		required string fileID,
+		required string versionID,
+		required string asUserID
+	) output=false {
 		local.return = structNew();
 		local.jsonBody = structNew();
 		local.jsonBody['type'] = "file_version";
@@ -167,7 +213,11 @@ component output="false" hint="Box service layer for file objects." {
 		return local.apiResponse;
 	}
 
-	public struct function deleteVersion(required string fileID, required string versionID, required string asUserID) output=false {
+	public struct function deleteVersion(
+		required string fileID,
+		required string versionID,
+		required string asUserID
+	) output=false {
 		local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
 			objectID   = arguments.fileID,

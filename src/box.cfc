@@ -40,7 +40,7 @@ component output="false" accessors="true" hint="Box service layer." {
 	public any function uploadFile(
 		required string fileName,
 		required string filePath,
-		required string ParentID="0",
+		required string parentID="0",
 		required string fileID="",
 		required boolean preflight="0",
 		required string asUserID="",
@@ -107,7 +107,10 @@ component output="false" accessors="true" hint="Box service layer." {
 	}
 
 	public any function updateFile(
-		required string fileID, string fileName, string parentID, array tags,
+		required string fileID,
+		string fileName,
+		string parentID,
+		array tags,
 		required string asUserID=""
 	) output=false {
 		local.return = getFileService().update( argumentCollection = arguments );
@@ -124,7 +127,7 @@ component output="false" accessors="true" hint="Box service layer." {
 
 	public any function copyFile(
 		required string fileName,
-		required string ParentID="0",
+		required string parentID="0",
 		required string SourceID,
 		required string asUserID=""
 	) output=false {
@@ -188,7 +191,7 @@ component output="false" accessors="true" hint="Box service layer." {
 
 	public any function createFolder(
 		required string folderName,
-		required string ParentID="0",
+		required string parentID="0",
 		required string asUserID="",
 		required boolean returnID="1"
 	) output=false {
@@ -201,7 +204,7 @@ component output="false" accessors="true" hint="Box service layer." {
 
 	public any function copyFolder(
 		required string folderName,
-		required string ParentID="0",
+		required string parentID="0",
 		required string SourceID,
 		required string asUserID="",
 		required boolean returnID="1"
@@ -230,7 +233,8 @@ component output="false" accessors="true" hint="Box service layer." {
 	}
 
 	public any function renameFolder(
-		required string folderID, string folderName,
+		required string folderID,
+		string folderName,
 		required string asUserID=""
 	) output=false {
 		local.return = updateFolder( argumentCollection = arguments );
@@ -238,7 +242,8 @@ component output="false" accessors="true" hint="Box service layer." {
 	}
 
 	public any function moveFolder(
-		required string folderID, string parentID="0",
+		required string folderID,
+		string parentID="0",
 		required string asUserID=""
 	) output=false {
 		local.return = updateFolder( argumentCollection = arguments );
@@ -246,7 +251,8 @@ component output="false" accessors="true" hint="Box service layer." {
 	}
 
 	public any function setFolderTags(
-		required string folderID, array tags,
+		required string folderID,
+		array tags,
 		required string asUserID=""
 	) output=false {
 		local.return = updateFolder( argumentCollection = arguments );
@@ -254,7 +260,10 @@ component output="false" accessors="true" hint="Box service layer." {
 	}
 
 	public any function updateFolder(
-		required string folderID, string folderName, string parentID, array tags,
+		required string folderID,
+		string folderName,
+		string parentID,
+		array tags,
 		required string asUserID=""
 	) output=false {
 		local.return = getFolderService().update( argumentCollection = arguments );
@@ -337,7 +346,7 @@ component output="false" accessors="true" hint="Box service layer." {
 	public any function createUploadSession(
 		required string fileName,
 		required string filePath,
-		required string ParentID="0",
+		required string parentID="0",
 		required string asUserID=""
 	) output=false {
 		local.fileInfo = getFileInfo(arguments.filePath);

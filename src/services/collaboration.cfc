@@ -4,12 +4,20 @@
 component output="false" hint="Box service layer for file objects." {
 	this.objectName = "collaborations";
 
-	public collaboration function init(boxAPIHandler boxAPIHandler) output=false {
+	public collaboration function init(
+		boxAPIHandler boxAPIHandler
+	) output=false {
 		variables.boxAPIHandler = arguments?.boxAPIHandler ?: createObject("component", "boxAPI.src.boxAPIHandler").init(  );
 		return this;
 	}
 
-	public struct function create(required string itemBoxID, required string accessibleByBoxID, required string accessibleType, required string role, required string asUserID) output=false {
+	public struct function create(
+		required string itemBoxID,
+		required string accessibleByBoxID,
+		required string accessibleType,
+		required string role,
+		required string asUserID
+	) output=false {
 		local.boxID = "";
 		local.jsonBody = structNew();
 		local.jsonBody['item'] = structNew();
@@ -29,7 +37,10 @@ component output="false" hint="Box service layer for file objects." {
 		return local.apiResponse;
 	}
 
-	public struct function get(required string collaborationID, required string asUserID) output=false {
+	public struct function get(
+		required string collaborationID,
+		required string asUserID
+	) output=false {
 		local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
 			objectID   = arguments.collaborationID,
