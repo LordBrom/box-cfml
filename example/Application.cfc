@@ -1,15 +1,15 @@
-<cfcomponent>
-	<cfset this.name = "BoxDriveApiExample" />
-	<cfset this.wschannels = [
+component {
+	this.name = "BoxDriveApiExample";
+	this.mappings = structNew();
+	this.mappings['/src'] = getDirectoryFromPath(getCurrentTemplatePath()) & "../src/";
+	this.wschannels = [
         {name:"box"}
-	] />
+	];
 
-	<cffunction name="onRequest" access="public">
-		<cfargument name="template" type="string" required="true" />
+	public function onRequest(required string template) {
+		application.boxService = new src.box();
+		application.boxService.init();
+		include arguments.template;
+	}
 
-		<cfset application.boxService = createObject("component", "src.box").init() />
-
-		<cfinclude template="#arguments.template#" />
-	</cffunction>
-
-</cfcomponent>
+}
