@@ -24,62 +24,8 @@ component extends="testbox.system.BaseSpec" accessors="true" {
 /*********************************** BDD SUITES ***********************************/
 
 	function run(){
-		describe("Managing Files", function(){
-			it( "Uploads a file", function(){
-				expect( true ).toBeTrue();
-			});
-
-			it( "Download a file", function(){
-				expect( true ).toBeTrue();
-			});
-
-			it( "Get info of a file", function(){
-				expect( true ).toBeTrue();
-			});
-
-			it( "Update a file", function(){
-				expect( true ).toBeTrue();
-			});
-
-			it( "Copy a file", function(){
-				expect( true ).toBeTrue();
-			});
-
-			it( "Get collaborations for a file", function(){
-				expect( true ).toBeTrue();
-			});
-
-			//it( "Create upload session a file", function(){
-			//	expect( true ).toBeTrue();
-			//});
-
-			it( "Uploads a new version of a file", function(){
-				expect( true ).toBeTrue();
-			});
-
-			it( "List file versions", function(){
-				expect( true ).toBeTrue();
-			});
-
-			it( "Get file version", function(){
-				expect( true ).toBeTrue();
-			});
-
-			it( "Revert file to version", function(){
-				expect( true ).toBeTrue();
-			});
-
-			it( "Delete file version", function(){
-				expect( true ).toBeTrue();
-			});
-
-			it( "Delete a file", function(){
-				expect( true ).toBeTrue();
-			});
-		});
-
-
 		describe("Managing Folders", function(){
+
 			folderTestID = "";
 			it( "Create a folder", function(){
 				folderTestID = application.boxService.createFolder(
