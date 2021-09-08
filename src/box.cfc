@@ -1,412 +1,358 @@
-<cfcomponent output="false" accessors="true" hint="Box service layer.">
+/**
+ * Box service layer.
+ */
+component output="false" accessors="true" hint="Box service layer." {
+	property name="fileService"          type="file";
+	property name="folderService"        type="folder";
+	property name="userService"          type="user";
+	property name="searchService"        type="search";
+	property name="collaborationService" type="collaboration";
+	property name="uploadSessionService" type="uploadSession";
 
-	<cfproperty name="fileService"          type="file"          />
-	<cfproperty name="folderService"        type="folder"        />
-	<cfproperty name="userService"          type="user"          />
-	<cfproperty name="searchService"        type="search"        />
-	<cfproperty name="collaborationService" type="collaboration" />
-	<cfproperty name="uploadSessionService" type="uploadSession" />
-
-	<cffunction name="init" returntype="box" access="public" output="false" hint="Constructor">
-
-		<cfset local.boxAPIHandler = createObject("component", "boxAPIHandler").init() />
-
-		<cfset setFileService(          createObject("component", "services.file"         ).init( local.boxAPIHandler ) ) />
-		<cfset setFolderService(        createObject("component", "services.folder"       ).init( local.boxAPIHandler ) ) />
-		<cfset setUserService(          createObject("component", "services.user"         ).init( local.boxAPIHandler ) ) />
-		<cfset setSearchService(        createObject("component", "services.search"       ).init( local.boxAPIHandler ) ) />
-		<cfset setCollaborationService( createObject("component", "services.collaboration").init( local.boxAPIHandler ) ) />
-		<cfset setUploadSessionService( createObject("component", "services.uploadSession").init( local.boxAPIHandler ) ) />
-
-		<cfreturn this />
-	</cffunction>
-
-	<!----------------------------------------------------------------------
+	public box function init() output=false {
+		local.boxAPIHandler = createObject("component", "boxAPIHandler").init();
+		setFileService(          createObject("component", "services.file"         ).init( local.boxAPIHandler ) );
+		setFolderService(        createObject("component", "services.folder"       ).init( local.boxAPIHandler ) );
+		setUserService(          createObject("component", "services.user"         ).init( local.boxAPIHandler ) );
+		setSearchService(        createObject("component", "services.search"       ).init( local.boxAPIHandler ) );
+		setCollaborationService( createObject("component", "services.collaboration").init( local.boxAPIHandler ) );
+		setUploadSessionService( createObject("component", "services.uploadSession").init( local.boxAPIHandler ) );
+		return this;
+	}
+	/* -------------------------------------------------------------------
 	  --------------------------------SEARCH--------------------------------
-	  ---------------------------------------------------------------------->
+	  -------------------------------------------------------------------*/
 
-	<cffunction name="searchForContent" access="public" returntype="any" output="false" hint="">
-		<cfargument name="query"           type="string"  required="true"            hint="The string to search for. Box matches the search string against object names, descriptions, text contents of files, and other data." />
-		<cfargument name="file_extensions" type="string"  required="true" default="" hint="Limit searches to specific file extensions like [pdf], [png], or [doc]. The value can be a single file extension or a comma-delimited list of extensions. For example: [png,md,pdf]" />
-		<cfargument name="type"            type="string"  required="true" default="" hint="The type of objects you want to include in the search results. The type can be [file], [folder], or [web_link]." />
-		<cfargument name="limit"           type="numeric" required="true" default="" hint="The maximum number of items to return. The default is 30 and the maximum is 200." />
-
-		<cfargument name="asUserID"        type="string"  required="true" default="" hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = getSearchService().searchForContent( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-
-	<!---------------------------------------------------------------------
+	public any function searchForContent(
+		required string query,
+		required string file_extensions="",
+		required string type="",
+		required numeric limit="",
+		required string asUserID=""
+	) output=false {
+		local.return = getSearchService().searchForContent( argumentCollection = arguments );
+		return local.return;
+	}
+	/* ------------------------------------------------------------------
 	  --------------------------------FILES--------------------------------
-	  --------------------------------------------------------------------->
+	  ------------------------------------------------------------------*/
 
-	<cffunction name="uploadFile"              access="public" returntype="any" output="false" hint="">
-		<cfargument name="fileName"  type="string"  required="true"             hint="Name of uploaded file." />
-		<cfargument name="filePath"  type="string"  required="true"             hint="Path to file to be uploaded." />
-		<cfargument name="ParentID"  type="string"  required="true" default="0" hint="BoxID of folder to upload file to." />
-		<cfargument name="fileID"    type="string"  required="true" default=""  hint="BoxID of file to update the version of." />
-		<cfargument name="preflight" type="boolean" required="true" default="0" hint="Performs a Preflight check, to see if uploading the file would be successful." />
-		<cfargument name="asUserID"  type="string"  required="true" default=""  hint="BoxID of user to perform action on behalf of." />
-
-		<cfargument name="returnIDOnly"  type="boolean"  required="true" default="1" hint="If true, only the BoxID of the file is returned. if false, the whole api response is returned" />
-
-		<cfset local.return = getFileService().upload( argumentCollection = arguments ) />
-
-		<cfif arguments.Preflight>
-			<cfset local.firstPos = find("=", local.return.upload_url) + 1 />
-			<cfset local.lastPos = find("&", local.return.upload_url) />
-			<cfset local.uploadSessionID = mid(local.return.upload_url, local.firstPos, local.lastPos - local.firstPos) />
-			<cfdump var="#getUploadSession(uploadSessionID = local.uploadSessionID)#" /><cfabort />
-			<cfset local.return = getFileService().commitUpload(
+	public any function uploadFile(
+		required string fileName,
+		required string filePath,
+		required string parentID="0",
+		required string fileID="",
+		required boolean preflight="0",
+		required string asUserID="",
+		required boolean returnIDOnly="1"
+	) output=false {
+		local.return = getFileService().upload( argumentCollection = arguments );
+		if ( arguments.Preflight ) {
+			local.firstPos = find("=", local.return.upload_url) + 1;
+			local.lastPos = find("&", local.return.upload_url);
+			local.uploadSessionID = mid(local.return.upload_url, local.firstPos, local.lastPos - local.firstPos);
+			writeDump( var=getUploadSession(uploadSessionID = local.uploadSessionID), abort=1);
+			local.return = getFileService().commitUpload(
 				uploadSessionID = local.uploadSessionID,
 				asUserID        = arguments.asUserID
-		 	) />
-		 	<cfdump var="#local.return#" /><cfabort />
-		</cfif>
+		 	);
+			writeDump( var=local.return, abort=1 );
+		}
+		if ( arguments.returnIDOnly && structKeyExists(local.return, "success") && local.return.success ) {
+			return local.return.entries[1].id;
+		}
+		return local.return;
+	}
 
-		<cfif arguments.returnIDOnly AND structKeyExists(local.return, "success") and local.return.success>
-			<cfreturn local.return.entries[1].id />
-		</cfif>
+	public any function downloadFile(
+		required string fileID,
+		required string asUserID=""
+	) output=false {
+		local.return = getFileService().download( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfreturn local.return />
-	</cffunction>
+	public any function getFileInfo(
+		required string fileID,
+		required string asUserID=""
+	) output=false {
+		local.return = getFileService().getInfo( argumentCollection = arguments );
+		return local.return;
+	}
 
-	<cffunction name="downloadFile"                access="public" returntype="any" output="false" hint="">
-		<cfargument name="fileID"   type="string" required="true"            hint="BoxID of file to download." />
-		<cfargument name="asUserID" type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
+	public any function renameFile(
+		required string fileName,
+		required string asUserID=""
+	) output=false {
+		local.return = updateFile( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfset local.return = getFileService().download( argumentCollection = arguments ) />
+	public any function moveFile(
+		required string fileID,
+		required string parentID="0",
+		required string asUserID=""
+	) output=false {
+		local.return = updateFile( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfreturn local.return />
-	</cffunction>
+	public any function setFileTags(
+		required string fileID,
+		required array tags,
+		required string asUserID=""
+	) output=false {
+		local.return = updateFile( argumentCollection = arguments );
+		return local.return;
+	}
 
-	<cffunction name="getFileInfo"             access="public" returntype="any" output="false" hint="">
-		<cfargument name="fileID"   type="string" required="true"            hint="BoxID of file to get info of." />
-		<cfargument name="asUserID" type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
+	public any function updateFile(
+		required string fileID,
+		string fileName,
+		string parentID,
+		array tags,
+		required string asUserID=""
+	) output=false {
+		local.return = getFileService().update( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfset local.return = getFileService().getInfo( argumentCollection = arguments ) />
+	public any function deleteFile(
+		required string fileID,
+		required string asUserID=""
+	) output=false {
+		local.return = getFileService().delete( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfreturn local.return />
-	</cffunction>
+	public any function copyFile(
+		required string fileName,
+		required string parentID="0",
+		required string SourceID,
+		required string asUserID=""
+	) output=false {
+		local.return = getFileService().copy( argumentCollection = arguments );
+		return local.return;
+	}
 
-	<cffunction name="renameFile"              access="public" returntype="any" output="false" hint="">
-		<cfargument name="fileName" type="string" required="true"            hint="Name to change the file to." />
-		<cfargument name="asUserID" type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
+	public any function getFileCollaborations(
+		required string fileID,
+		required string asUserID=""
+	) output=false {
+		local.return = getFileService().getCollaborations( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfset local.return = updateFile( argumentCollection = arguments ) />
+	public any function createFileUploadSession(
+		required string fileID,
+		required string asUserID=""
+	) output=false {
+		local.return = getFileService().createUploadSession( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfreturn local.return />
-	</cffunction>
+	public any function listFileVersions(
+		required string fileID,
+		required string asUserID=""
+	) output=false {
+		local.return = getFileService().ListVersions( argumentCollection = arguments );
+		return local.return;
+	}
 
-	<cffunction name="moveFile"                access="public" returntype="any" output="false" hint="">
-		<cfargument name="fileID"   type="string" required="true"             hint="BoxID of file to update." />
-		<cfargument name="parentID" type="string" required="true" default="0" hint="BoxID of folder to move the file to." />
-		<cfargument name="asUserID" type="string" required="true" default=""  hint="BoxID of user to perform action on behalf of." />
+	public any function getFileVersion(
+		required string fileID,
+		required string versionID,
+		required string asUserID=""
+	) output=false {
+		local.return = getFileService().getVersion( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfset local.return = updateFile( argumentCollection = arguments ) />
+	public any function revertFileVersion(
+		required string fileID,
+		required string versionID,
+		required string asUserID=""
+	) output=false {
+		local.return = getFileService().revertVersion( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="setFileTags"             access="public" returntype="any" output="false" hint="">
-		<cfargument name="fileID"   type="string" required="true"            hint="BoxID of file to update." />
-		<cfargument name="tags"     type="array"  required="true"            hint="Array of strings. These tags will by applied to the file." />
-		<cfargument name="asUserID" type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = updateFile( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="updateFile"              access="public" returntype="any" output="false" hint="">
-		<cfargument name="fileID"   type="string" required="true"             hint="BoxID of file to update." />
-		<cfargument name="fileName" type="string" required="false"            hint="Name to change the file to." />
-		<cfargument name="parentID" type="string" required="false"            hint="BoxID of folder to move the file to." />
-		<cfargument name="tags"     type="array"  required="false"            hint="Array of strings. These tags will by applied to the file." />
-		<cfargument name="asUserID" type="string" required="true"  default="" hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = getFileService().update( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="deleteFile"              access="public" returntype="any" output="false" hint="">
-		<cfargument name="fileID"   type="string" required="true"            hint="BoxID of file to delete." />
-		<cfargument name="asUserID" type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = getFileService().delete( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="copyFile"                access="public" returntype="any" output="false" hint="">
-		<cfargument name="fileName" type="string" required="true"             hint="Name of the newly created file." />
-		<cfargument name="ParentID" type="string" required="true" default="0" hint="BoxID of folder new file will be created in." />
-		<cfargument name="SourceID" type="string" required="true"             hint="BoxID of folder to be copied." />
-		<cfargument name="asUserID" type="string" required="true" default=""  hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = getFileService().copy( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="getFileCollaborations"   access="public" returntype="any" output="false" hint="">
-		<cfargument name="fileID"   type="string" required="true"            hint="BoxID of file to delete." />
-		<cfargument name="asUserID" type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = getFileService().getCollaborations( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="createFileUploadSession" access="public" returntype="any" output="false" hint="">
-		<cfargument name="fileID"   type="string" required="true"            hint="BoxID of file to delete." />
-		<cfargument name="asUserID" type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = getFileService().createUploadSession( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="listFileVersions"        access="public" returntype="any" output="false" hint="">
-		<cfargument name="fileID"   type="string" required="true"            hint="BoxID of file to delete." />
-		<cfargument name="asUserID" type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = getFileService().ListVersions( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="getFileVersion"          access="public" returntype="any" output="false" hint="">
-		<cfargument name="fileID"    type="string" required="true"            hint="BoxID of file to delete." />
-		<cfargument name="versionID" type="string" required="true"            hint="Version number to retrieve." />
-		<cfargument name="asUserID"  type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = getFileService().getVersion( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="revertFileVersion"       access="public" returntype="any" output="false" hint="">
-		<cfargument name="fileID"    type="string" required="true"            hint="BoxID of file to delete." />
-		<cfargument name="versionID" type="string" required="true"            hint="Version number to revert to." />
-		<cfargument name="asUserID"  type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = getFileService().revertVersion( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="deleteFileVersion"       access="public" returntype="any" output="false" hint="">
-		<cfargument name="fileID"    type="string" required="true"            hint="BoxID of file to delete." />
-		<cfargument name="versionID" type="string" required="true"            hint="Version number to delete." />
-		<cfargument name="asUserID"  type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = getFileService().deleteVersion( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-
-	<!---------------------------------------------------------------------
+	public any function deleteFileVersion(
+		required string fileID,
+		required string versionID,
+		required string asUserID=""
+	) output=false {
+		local.return = getFileService().deleteVersion( argumentCollection = arguments );
+		return local.return;
+	}
+	/* ------------------------------------------------------------------
 	  -------------------------------FOLDERS-------------------------------
-	  --------------------------------------------------------------------->
+	  ------------------------------------------------------------------*/
 
-	<cffunction name="createFolder"            access="public" returntype="any" output="false" hint="">
-		<cfargument name="folderName" type="string" required="true"              hint="Name of the newly created folder." />
-		<cfargument name="ParentID"   type="string" required="true" default="0"  hint="BoxID of folder new folder will be created in." />
-		<cfargument name="asUserID"   type="string" required="true" default=""   hint="BoxID of user to perform action on behalf of." />
+	public any function createFolder(
+		required string folderName,
+		required string parentID="0",
+		required string asUserID="",
+		required boolean returnID="1"
+	) output=false {
+		local.return = getFolderService().create( argumentCollection = arguments );
+		if ( arguments.returnID && local.return?.success ?: false ) {
+			return local.return.id;
+		}
+		return local.return;
+	}
 
-		<cfargument name="returnID"  type="boolean"  required="true" default="1" hint="If true, only the BoxID of the folder is returned. if false, the whole api response is returned" />
+	public any function copyFolder(
+		required string folderName,
+		required string parentID="0",
+		required string SourceID,
+		required string asUserID="",
+		required boolean returnID="1"
+	) output=false {
+		local.return = getFolderService().copy( argumentCollection = arguments );
+		if ( arguments.returnID && local.return?.success ?: false ) {
+			return local.return.id;
+		}
+		return local.return;
+	}
 
-		<cfset local.return = getFolderService().create( argumentCollection = arguments ) />
+	public any function getFolderContents(
+		required string folderID="0",
+		required string asUserID=""
+	) output=false {
+		local.return = getFolderService().getContents( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfif arguments.returnID AND local.return?.success ?: false>
-			<cfreturn local.return.id />
-		</cfif>
+	public any function getFolderInfo(
+		required string folderID="0",
+		required string asUserID=""
+	) output=false {
+		local.return = getFolderService().getInfo( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfreturn local.return />
-	</cffunction>
+	public any function renameFolder(
+		required string folderID,
+		string folderName,
+		required string asUserID=""
+	) output=false {
+		local.return = updateFolder( argumentCollection = arguments );
+		return local.return;
+	}
 
-	<cffunction name="copyFolder"              access="public" returntype="any" output="false" hint="">
-		<cfargument name="folderName" type="string" required="true"              hint="Name of the newly created folder." />
-		<cfargument name="ParentID"   type="string" required="true" default="0"  hint="BoxID of folder new folder will be created in." />
-		<cfargument name="SourceID"   type="string" required="true"              hint="BoxID of folder to be copied." />
-		<cfargument name="asUserID"   type="string" required="true" default=""   hint="BoxID of user to perform action on behalf of." />
+	public any function moveFolder(
+		required string folderID,
+		string parentID="0",
+		required string asUserID=""
+	) output=false {
+		local.return = updateFolder( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfargument name="returnID"  type="boolean"  required="true" default="1" hint="If true, only the BoxID of the folder is returned. if false, the whole api response is returned" />
+	public any function setFolderTags(
+		required string folderID,
+		array tags,
+		required string asUserID=""
+	) output=false {
+		local.return = updateFolder( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfset local.return = getFolderService().copy( argumentCollection = arguments ) />
+	public any function updateFolder(
+		required string folderID,
+		string folderName,
+		string parentID,
+		array tags,
+		required string asUserID=""
+	) output=false {
+		local.return = getFolderService().update( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfif arguments.returnID AND local.return?.success ?: false>
-			<cfreturn local.return.id />
-		</cfif>
+	public any function deleteFolder(
+		required string folderID="0",
+		required string asUserID=""
+	) output=false {
+		local.return = getFolderService().delete( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="getFolderContents"       access="public" returntype="any" output="false" hint="">
-		<cfargument name="folderID" type="string" required="true" default="0" hint="BoxID of folder to get contents of." />
-		<cfargument name="asUserID" type="string" required="true" default=""  hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = getFolderService().getContents( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="getFolderInfo"           access="public" returntype="any" output="false" hint="">
-		<cfargument name="folderID" type="string" required="true" default="0" hint="BoxID of folder to get info of." />
-		<cfargument name="asUserID" type="string" required="true" default=""  hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = getFolderService().getInfo( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="renameFolder"            access="public" returntype="any" output="false" hint="">
-		<cfargument name="folderID"   type="string" required="true"            hint="BoxID of folder to update." />
-		<cfargument name="folderName" type="string" required="false"           hint="Name to change the folder to." />
-		<cfargument name="asUserID"   type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = updateFolder( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="moveFolder"              access="public" returntype="any" output="false" hint="">
-		<cfargument name="folderID" type="string" required="true"              hint="BoxID of folder to update." />
-		<cfargument name="parentID" type="string" required="false" default="0" hint="BoxID of folder to move the folder to." />
-		<cfargument name="asUserID" type="string" required="true"  default=""  hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = updateFolder( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="setFolderTags"           access="public" returntype="any" output="false" hint="">
-		<cfargument name="folderID" type="string" required="true"            hint="BoxID of folder to update." />
-		<cfargument name="tags"     type="array"  required="false"           hint="Array of strings. These tags will by applied to the folder." />
-		<cfargument name="asUserID" type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = updateFolder( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="updateFolder"            access="public" returntype="any" output="false" hint="">
-		<cfargument name="folderID"   type="string" required="true"            hint="BoxID of folder to update." />
-		<cfargument name="folderName" type="string" required="false"           hint="Name to change the folder to." />
-		<cfargument name="parentID"   type="string" required="false"           hint="BoxID of folder to move the folder to." />
-		<cfargument name="tags"       type="array"  required="false"           hint="Array of strings. These tags will by applied to the folder." />
-		<cfargument name="asUserID"   type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = getFolderService().update( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="deleteFolder"            access="public" returntype="any" output="false" hint="">
-		<cfargument name="folderID" type="string" required="true" default="0" hint="BoxID of folder to delete." />
-		<cfargument name="asUserID" type="string" required="true" default=""  hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = getFolderService().delete( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="getFolderCollaborations" access="public" returntype="any" output="false" hint="">
-		<cfargument name="folderID" type="string" required="true" default="0" hint="BoxID of folder to delete." />
-		<cfargument name="asUserID" type="string" required="true" default=""  hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = getFolderService().getCollaborations( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-
-	<!---------------------------------------------------------------------
+	public any function getFolderCollaborations(
+		required string folderID="0",
+		required string asUserID=""
+	) output=false {
+		local.return = getFolderService().getCollaborations( argumentCollection = arguments );
+		return local.return;
+	}
+	/* ------------------------------------------------------------------
 	  --------------------------------USERS--------------------------------
-	  --------------------------------------------------------------------->
+	  ------------------------------------------------------------------*/
 
-	<cffunction name="getUserInfo"        access="public" returntype="any" output="false" hint="">
-		<cfargument name="userID"   type="string" required="true"            hint="BoxID of user to get info of." />
-		<cfargument name="asUserID" type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
+	public any function getUserInfo(
+		required string userID,
+		required string asUserID=""
+	) output=false {
+		local.return = getUserService().getInfo( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfset local.return = getUserService().getInfo( argumentCollection = arguments ) />
+	public any function getCurrentUserInfo(
+		required string asUserID=""
+	) output=false {
+		local.return = getUserService().getCurrentUserInfo( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="getCurrentUserInfo" access="public" returntype="any" output="false" hint="">
-		<cfargument name="asUserID" type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = getUserService().getCurrentUserInfo( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="createAppUser"      access="public" returntype="any" output="false" hint="">
-		<cfargument name="userName" type="string" required="true"            hint="Name of user to create" />
-		<cfargument name="asUserID" type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.return = getUserService().createAppUser( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-
-	<!----------------------------------------------------------------------
+	public any function createAppUser(
+		required string userName,
+		required string asUserID=""
+	) output=false {
+		local.return = getUserService().createAppUser( argumentCollection = arguments );
+		return local.return;
+	}
+	/* -------------------------------------------------------------------
 	  ----------------------------COLLABORATIONS----------------------------
-	  ---------------------------------------------------------------------->
+	  -------------------------------------------------------------------*/
 
-	<cffunction name="createCollaboration" access="public" returntype="any" output="false" hint="">
-		<cfargument name="itemBoxID"         type="string" required="true"                  hint="The ID of the file or folder that access is granted to" />
-		<cfargument name="accessibleByBoxID" type="string" required="true"                  hint="The ID of the user or group that is granted access" />
-		<cfargument name="accessibleType"    type="string" required="true" default="user"   hint="[user] or [group]" />
-		<cfargument name="role"              type="string" required="true" default="editor" hint="The level of access granted. Can be [editor], [viewer], [previewer], [uploader], [previewer uploader], [viewer uploader], or [co-owner]." />
-		<cfargument name="asUserID"          type="string" required="true" default=""       hint="BoxID of user to perform action on behalf of." />
-
-		<cfif NOT listFindNoCase("editor,viewer,previewer,uploader,previewer uploader,viewer uploader,co-owner", arguments.role) >
-			<cfthrow message="Arugment ""role"" was passed with an invalid value" />
-		</cfif>
-		<cfif NOT listFindNoCase("user,group", arguments.accessibleType) >
-			<cfthrow message="Arugment ""accessibleType"" was passed with an invalid value" />
-		</cfif>
-
-		<cfset local.return = getCollaborationService().create( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-
-	<!----------------------------------------------------------------------
+	public any function createCollaboration(
+		required string itemBoxID,
+		required string accessibleByBoxID,
+		required string accessibleType="user",
+		required string role="editor",
+		required string asUserID=""
+	) output=false {
+		if ( !listFindNoCase("editor,viewer,previewer,uploader,previewer uploader,viewer uploader,co-owner", arguments.role) ) {
+			throw( message="Arugment ""role"" was passed with an invalid value" );
+		}
+		if ( !listFindNoCase("user,group", arguments.accessibleType) ) {
+			throw( message="Arugment ""accessibleType"" was passed with an invalid value" );
+		}
+		local.return = getCollaborationService().create( argumentCollection = arguments );
+		return local.return;
+	}
+	/* -------------------------------------------------------------------
 	  ----------------------------UPLOAD SESSION----------------------------
-	  ---------------------------------------------------------------------->
+	  -------------------------------------------------------------------*/
 
-	<cffunction name="getUploadSession"    access="public" returntype="any" output="false" hint="">
-		<cfargument name="uploadSessionID" type="string" required="true"            hint="" />
-		<cfargument name="asUserID"        type="string" required="true" default="" hint="BoxID of user to perform action on behalf of." />
+	public any function getUploadSession(
+		required string uploadSessionID,
+		required string asUserID=""
+	) output=false {
+		local.return = getUploadSessionService().get( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfset local.return = getUploadSessionService().get( argumentCollection = arguments ) />
+	public any function createUploadSession(
+		required string fileName,
+		required string filePath,
+		required string parentID="0",
+		required string asUserID=""
+	) output=false {
+		local.fileInfo = getFileInfo(arguments.filePath);
+		arguments.fileSize = local.fileInfo.size;
+		local.return = getUploadSessionService().create( argumentCollection = arguments );
+		return local.return;
+	}
 
-		<cfreturn local.return />
-	</cffunction>
-
-	<cffunction name="createUploadSession" access="public" returntype="any" output="false" hint="">
-		<cfargument name="fileName"  type="string"  required="true"             hint="Name of uploaded file." />
-		<cfargument name="filePath"  type="string"  required="true"             hint="Path to file to be uploaded." />
-		<cfargument name="ParentID"  type="string"  required="true" default="0" hint="BoxID of folder to upload file to." />
-		<cfargument name="asUserID"  type="string" required="true" default=""   hint="BoxID of user to perform action on behalf of." />
-
-		<cfset local.fileInfo = getFileInfo(arguments.filePath) />
-		<cfset arguments.fileSize = local.fileInfo.size />
-
-		<cfset local.return = getUploadSessionService().create( argumentCollection = arguments ) />
-
-		<cfreturn local.return />
-	</cffunction>
-
-</cfcomponent>
+}

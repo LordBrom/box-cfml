@@ -1,19 +1,20 @@
-<!--- Rename this file to "boxAuthentication.cfc" before use. --->
+//  Rename this file to "boxAuthentication.cfc" before use.
+/**
+ * Box application credentials; [Rename this file to ""boxAuthentication"" before use]
+ */
+component output="false" hint="Box application credentials; [Rename this file to ""boxAuthentication"" before use]" {
 
-<cfcomponent output="false" hint="Box application credentials; [Rename this file to ""boxAuthentication"" before use]">
-
-	<cffunction name="getEnterpriseID" access="public" returntype="string" output="false" hint="">
-		<cfreturn "00000000" />
-	</cffunction>
-
-	<!---
+	public string function getEnterpriseID() output=false {
+		return "00000000";
+	}
+	/*
 		The private key provided by Box will need to be encrypted to a RSA private token.
 		Save the key in its own file and run the following command using OpenSSL, and use the key in the resulting file.
 			openssl rsa -in <file path> -out <file path>
 		You will be prompted for the phasephrase provided with the private key.
-	 --->
-	<cffunction name="getPrivateKey" access="public" returntype="string" output="false" hint="">
-		<cfreturn "-----BEGIN RSA PRIVATE KEY-----#chr(10)#" &
+	*/
+	public string function getPrivateKey() output=false {
+		return "-----BEGIN RSA PRIVATE KEY-----#chr(10)#" &
 			"0000000000000000000000000000000000000000000000000000000000000000#chr(10)#" &
 			"0000000000000000000000000000000000000000000000000000000000000000#chr(10)#" &
 			"0000000000000000000000000000000000000000000000000000000000000000#chr(10)#" &
@@ -39,11 +40,11 @@
 			"0000000000000000000000000000000000000000000000000000000000000000#chr(10)#" &
 			"0000000000000000000000000000000000000000000000000000000000000000#chr(10)#" &
 			"00000000000000000000000000000000000000000000000000000000#chr(10)#" &
-			"-----END RSA PRIVATE KEY-----#chr(10)#" />
-	</cffunction>
+			"-----END RSA PRIVATE KEY-----#chr(10)#";
+	}
 
-	<cffunction name="getPublicKey" access="public" returntype="string" output="false" hint="">
-		<cfreturn "-----BEGIN PUBLIC KEY-----#chr(10)#" &
+	public string function getPublicKey() output=false {
+		return "-----BEGIN PUBLIC KEY-----#chr(10)#" &
 			"0000000000000000000000000000000000000000000000000000000000000000#chr(10)#" &
 			"0000000000000000000000000000000000000000000000000000000000000000#chr(10)#" &
 			"0000000000000000000000000000000000000000000000000000000000000000#chr(10)#" &
@@ -51,23 +52,23 @@
 			"0000000000000000000000000000000000000000000000000000000000000000#chr(10)#" &
 			"0000000000000000000000000000000000000000000000000000000000000000#chr(10)#" &
 			"00000000#chr(10)#" &
-			"-----END PUBLIC KEY-----#chr(10)#" />
-	</cffunction>
+			"-----END PUBLIC KEY-----#chr(10)#";
+	}
 
-	<cffunction name="getKeyID" access="public" returntype="string" output="false" hint="">
-		<cfreturn "00000000" />
-	</cffunction>
+	public string function getKeyID() output=false {
+		return "00000000";
+	}
 
-	<cffunction name="getClientID" access="public" returntype="string" output="false" hint="">
-		<cfreturn "00000000000000000000000000000000" />
-	</cffunction>
+	public string function getClientID() output=false {
+		return "00000000000000000000000000000000";
+	}
 
-	<cffunction name="getClientSecret" access="public" returntype="string" output="false" hint="">
-		<cfreturn "00000000000000000000000000000000" />
-	</cffunction>
+	public string function getClientSecret() output=false {
+		return "00000000000000000000000000000000";
+	}
 
-	<cffunction name="getDefaultUserID" access="public" returntype="string" output="false" hint="">
-		<cfreturn "0000000000" />
-	</cffunction>
+	public string function getDefaultUserID() output=false {
+		return "0000000000";
+	}
 
-</cfcomponent>
+}

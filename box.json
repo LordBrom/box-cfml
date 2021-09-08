@@ -1,0 +1,8 @@
+{
+    "dependencies":{
+        "testbox":"^4.4.0-snapshot"
+    },
+    "installPaths":{
+        "testbox":"testbox/"
+    }
+}

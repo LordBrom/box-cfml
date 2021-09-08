@@ -1,258 +1,275 @@
-<cfcomponent output="false" hint="Contains functions that interact with the Box.com API via http calls">
+/**
+ * Contains functions that interact with the Box.com API via http calls
+ */
+component output="false" hint="Contains functions that interact with the Box.com API via http calls" {
+	this.boxAPIURL       = "https://api.box.com/";
+	this.boxAPIUploadURL = "https://upload.box.com/api/"; //  used for file upload only
+	this.boxAPIVersion   = "2.0";
 
-	<cfset this.boxAPIURL       = "https://api.box.com/" />
-	<cfset this.boxAPIUploadURL = "https://upload.box.com/api/" /> <!--- used for file upload only --->
-	<cfset this.boxAPIVersion   = "2.0" />
+	public boxAPIHandler function init(
+		required string boxAPIlogDatasource="",
+		required string boxAPIlogTableName=""
+	) output=false {
+		variables.boxAuth = createObject("component", "boxAuthentication");
+		variables.JWT     = createObject("component", "jwtTools.lib.JsonWebTokens");
 
-	<cffunction name="init" returntype="boxAPIHandler" access="public" output="false" hint="Constructor">
-		<cfargument name="boxAPIlogDatasource" type="string" required="true" default="" hint="Datasource to use for logging Box API interactions." />
-		<cfargument name="boxAPIlogTableName"  type="string" required="true" default="" hint="Name to use for the table for logging Box API interactions." />
+		variables.access_token = "";
+		variables.expires_in   = "";
+		variables.issued_at    = "";
+		variables.defaultUserID = variables.boxAuth.getDefaultUserID();
 
-		<cfset variables.boxAuth = createObject("component", "boxAuthentication") />
-		<cfset variables.JWT     = createObject("component", "jwtTools.JsonWebTokens") />
-		<cfif len(arguments.boxAPIlogDatasource) AND len(arguments.boxAPIlogTableName)>
-			<cfset variables.boxAPILog = createObject("component", "boxAPILogHandler").init(arguments.boxAPIlogDatasource, arguments.boxAPIlogTableName) />
-		</cfif>
+		if ( len(arguments.boxAPIlogDatasource) && len(arguments.boxAPIlogTableName) ) {
+			variables.boxAPILog = createObject("component", "boxAPILogHandler").init(arguments.boxAPIlogDatasource, arguments.boxAPIlogTableName);
+		}
 
-		<cfset variables.access_token = "" />
-		<cfset variables.expires_in   = "" />
-		<cfset variables.issued_at    = "" />
+		return this;
+	}
 
-		<cfset variables.defaultUserID = variables.boxAuth.getDefaultUserID() />
+	public any function makeRequest(
+		required string object="",
+		required string objectID="",
+		required string method="",
+		required string queryParams="",
+		required struct jsonBody="#structNew()#",
+		required string httpMethod="POST",
+		required string userID="",
+		required string filePath="",
+		required string getasbinary="no",
+		required boolean debug="false"
+	) output=false {
+		local.return = structNew();
+		local.httpParams = arrayNew(1);
 
-		<cfreturn this />
-	</cffunction>
+		if ( !len(variables.access_token) OR
+				dateCompare(now(), dateAdd('s', (variables.expires_in - 60), variables.issued_at)) != -1 ) {
+			getAuthorization();
+		}
 
-	<cffunction name="makeRequest"      returntype="any"    access="public" output="false" hint="">
-		<cfargument name="object"      type="string"  required="true" default=""                          hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; Object to affect ex. [files],[folders],[users]..." />
-		<cfargument name="objectID"    type="string"  required="true" default=""                          hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; BoxID of object being affected. " />
-		<cfargument name="method"      type="string"  required="true" default=""                          hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; Action to be taken on the object. " />
-		<cfargument name="queryParams" type="string"  required="true" default=""                          hint="{BoxURL}/[object]/[objectID]/[method]?[queryParams]; Additional url parameters. " />
-		<cfargument name="jsonBody"    type="struct"  required="true" default="#structNew()#"             hint="Parameters to be passed as http body, or formfield for file upload." />
-		<cfargument name="httpMethod"  type="string"  required="true" default="POST"                      hint="cfhttp request method. GET,POST,PUT,DELETE,HEAD,TRACE,OPTIONS,PATCH" />
-		<cfargument name="userID"      type="string"  required="true" default="" hint="Box user ID of who the action is being taken on behalf of" />
-		<cfargument name="filePath"    type="string"  required="true" default=""                          hint="Path to a file to be uploaded" />
-		<cfargument name="getasbinary" type="string"  required="true" default="no"                        hint="If true, cfhttp request returns binary." />
-		<cfargument name="debug"       type="boolean" required="true" default="false"                     hint="" />
+		arrayAppend(local.httpParams, { "type": "Header", "name": "Authorization", "value": variables.access_token });
 
-		<cfset local.return = structNew() />
-		<cfset local.httpParams = arrayNew(1) />
+		if ( len(arguments.userID) ) {
+			arrayAppend(local.httpParams, { "type": "Header", "name": "As-User", "value": arguments.userID });
+		} else if ( len(variables.defaultUserID) ) {
+			arrayAppend(local.httpParams, { "type": "Header", "name": "As-User", "value": variables.defaultUserID });
+		}
 
-		<cfif NOT len(variables.access_token) OR
-				dateCompare(now(), dateAdd('s', (variables.expires_in - 60), variables.issued_at)) NEQ -1>
-			<cfset getAuthorization() />
-		</cfif>
+		if ( arguments.object == "files/upload_sessions" && arguments.httpMethod != 'GET' ) {
+			local.url = this.boxAPIUploadURL & this.boxAPIVersion & "/" & arguments.object & "/";
+			arrayAppend(local.httpParams, { "type": "formfield",   "name": "attributes", "value": SerializeJSON(arguments.jsonBody) });
+			arrayAppend(local.httpParams, { "type": "file",   "name": "file", "file": arguments.filePath });
 
-		<cfset arrayAppend(local.httpParams, { "type": "Header", "name": "Authorization", "value": variables.access_token }) />
+		} else if ( arguments.object == "files" && arguments.method == "content" && httpMethod == "POST" && len(arguments.filePath) ) {
+			local.url = this.boxAPIUploadURL & this.boxAPIVersion & "/" & arguments.object & "/";
+			arrayAppend(local.httpParams, { "type": "formfield", "name": "attributes", "value": SerializeJSON(arguments.jsonBody) });
+			arrayAppend(local.httpParams, { "type": "file",      "name": "file",       "file": arguments.filePath });
 
-		<cfif len(arguments.userID)>
-			<cfset arrayAppend(local.httpParams, { "type": "Header", "name": "As-User", "value": arguments.userID }) />
-		<cfelseif len(variables.defaultUserID) >
-			<cfset arrayAppend(local.httpParams, { "type": "Header", "name": "As-User", "value": variables.defaultUserID }) />
-		</cfif>
+		} else if ( arguments.object == "files" && arguments.method == "content" && httpMethod == "OPTIONS" ) {
+			local.url = this.boxAPIURL & this.boxAPIVersion & "/" & arguments.object & "/";
+			arrayAppend(local.httpParams, { "type": "Header", "name": "Content-Type", "value": "multipart/form-data" });
+			arrayAppend(local.httpParams, { "type": "formfield", "name": "attributes", "value": SerializeJSON(arguments.jsonBody) });
 
-		<cfif arguments.object EQ "files/upload_sessions" AND arguments.httpMethod NEQ 'GET'>
-			<cfset local.url = this.boxAPIUploadURL & this.boxAPIVersion & "/" & arguments.object & "/" />
-			<cfset arrayAppend(local.httpParams, { "type": "formfield",   "name": "attributes", "value": SerializeJSON(arguments.jsonBody) }) />
-			<cfset arrayAppend(local.httpParams, { "type": "file",   "name": "file", "file": arguments.filePath }) />
+		} else {
+			local.url = this.boxAPIURL & this.boxAPIVersion & "/" & arguments.object & "/";
+			arrayAppend(local.httpParams, { "type": "Header", "name": "Content-Type", "value": "application/json" });
+			arrayAppend(local.httpParams, { "type": "body",   "name": "json",         "value": SerializeJSON(arguments.jsonBody) });
+		}
 
-		<cfelseif arguments.object EQ "files" AND arguments.method EQ "content" AND httpMethod EQ "POST" AND len(arguments.filePath)>
-			<cfset local.url = this.boxAPIUploadURL & this.boxAPIVersion & "/" & arguments.object & "/" />
-			<cfset arrayAppend(local.httpParams, { "type": "formfield", "name": "attributes", "value": SerializeJSON(arguments.jsonBody) }) />
-			<cfset arrayAppend(local.httpParams, { "type": "file",      "name": "file",       "file": arguments.filePath }) />
+		if ( len(arguments.objectID) ) {
+			local.url &= arguments.objectID & "/";
+		}
+		if ( len(arguments.method) ) {
+			local.url &= arguments.method;
+		}
+		if ( len(arguments.queryParams) ) {
+			local.url &= "?" & arguments.queryParams;
+		}
 
-		<cfelseif arguments.object EQ "files" AND arguments.method EQ "content" AND httpMethod EQ "OPTIONS">
-			<cfset local.url = this.boxAPIURL & this.boxAPIVersion & "/" & arguments.object & "/" />
-			<cfset arrayAppend(local.httpParams, { "type": "Header", "name": "Content-Type", "value": "multipart/form-data" }) />
-			<cfset arrayAppend(local.httpParams, { "type": "formfield", "name": "attributes", "value": SerializeJSON(arguments.jsonBody) }) />
+		arrayAppend(local.httpParams, { "type": "Header", "name": "Accept", "value": "application/json" });
 
-		<cfelse>
-			<cfset local.url = this.boxAPIURL & this.boxAPIVersion & "/" & arguments.object & "/" />
-			<cfset arrayAppend(local.httpParams, { "type": "Header", "name": "Content-Type", "value": "application/json" }) />
-			<cfset arrayAppend(local.httpParams, { "type": "body",   "name": "json",         "value": SerializeJSON(arguments.jsonBody) }) />
-		</cfif>
-
-		<cfif len(arguments.objectID) >
-			<cfset local.url &= arguments.objectID & "/" />
-		</cfif>
-
-		<cfif len(arguments.method) >
-			<cfset local.url &= arguments.method />
-		</cfif>
-
-		<cfif len(arguments.queryParams) >
-			<cfset local.url &= "?" & arguments.queryParams />
-		</cfif>
-
-		<cfset arrayAppend(local.httpParams, { "type": "Header", "name": "Accept", "value": "application/json" }) />
-
-		<cfreturn send(
+		return send(
 			url         = local.url,
 			method      = arguments.httpMethod,
 			getasbinary = arguments.getasbinary,
 			httpParams  = local.httpParams,
 			debug       = arguments.debug
-		) />
-	</cffunction>
+		);
+	}
 
-	<cffunction name="getAuthorization" returntype="void"   access="private" output="false" hint="Gets an autheToken from Box.">
-		<!--- Initialize local function scope --->
-		<cfset local.authorization = '' />
+	/**
+	 * Gets an autheToken from Box.
+	 */
+	private void function getAuthorization() output=false {
+		//  Initialize local function scope
+		local.authorization = '';
+		//  Use variables.JWTTools to get the JWTAssertion
+		local.jwtAssertion = getJWTAssertion();
+		//  call getToken to ping box and get the authToken
+		local.authorization = getOAUTHToken(local.jwtAssertion);
 
-		<!--- Use variables.JWTTools to get the JWTAssertion --->
-		<cfset local.jwtAssertion = getJWTAssertion() />
+		if (not structKeyExists(local.authorization, 'access_token')) {
+			throw( message="Did not receive authentication token." );
+		}
 
-		<!--- call getToken to ping box and get the authToken  --->
-		<cfset local.authorization = getOAUTHToken(local.jwtAssertion) />
+		variables.access_token  = "Bearer #local.authorization.access_token#";
+		variables.expires_in    = local.authorization.expires_in;
+	}
 
-		<cfset variables.access_token  = "Bearer #local.authorization.access_token#" />
-		<cfset variables.expires_in    = local.authorization.expires_in />
-	</cffunction>
-
-	<cffunction name="getJWTAssertion"  returnType="string" access="private" output="false" hint="use the environment-based variables to get the ">
-		<cfset local.JWTPayload = getJWTPayload() />
-
-		<cfset local.jwtClient = variables.JWT.createClient(
+	/**
+	 * use the environment-based variables to get the
+	 */
+	private string function getJWTAssertion() output=false {
+		local.JWTPayload = getJWTPayload();
+		local.jwtClient = variables.JWT.createClient(
 			algorithm  = 'RS256',
 			key        = variables.boxAuth.getPublicKey(),
 			privateKey = variables.boxAuth.getPrivateKey()
-		) />
+		);
+		local.return = local.jwtClient.encode(local.JWTPayload, variables.boxAuth.getKeyID());
 
-		<cfset local.return = local.jwtClient.encode(local.JWTPayload, variables.boxAuth.getKeyID()) />
-		<cfreturn local.return />
-	</cffunction>
+		return local.return;
+	}
 
-	<cffunction name="getJWTPayload"    returnType="struct" access="private" output="false" hint="return the default JWT values based on BOX APP console ">
-		<cfset local.return = structNew() />
+	/**
+	 * return the default JWT values based on BOX APP console
+	 */
+	private struct function getJWTPayload() output=false {
+		local.return = structNew();
+		variables.issued_at = now();
+		local.return["exp"] = "#Int(floor(variables.issued_at.getTime()/1000) + 15)#";
+		local.return["iss"] = variables.boxAuth.getClientID();
+		local.return["sub"] = " #trim(variables.boxAuth.getEnterpriseID())#";
+		//  The space before the enterpriseID is required for ColdFusion.
+		local.return["box_sub_type"] = "enterprise";
+		local.return["aud"] = "#this.boxAPIURL#oauth2/token";
+		local.return["jti"] = '#replace(createUUID(), "-", "", "all")#';
 
-		<cfset variables.issued_at = now() />
-		<cfset local.return["exp"] = "#Int(floor(variables.issued_at.getTime()/1000) + 15)#" />
-		<cfset local.return["iss"] = variables.boxAuth.getClientID() />
-		<cfset local.return["sub"] = " #trim(variables.boxAuth.getEnterpriseID())#" /> <!--- The space before the enterpriseID is required for ColdFusion. --->
-		<cfset local.return["box_sub_type"] = "enterprise" />
-		<cfset local.return["aud"] = "#this.boxAPIURL#oauth2/token" />
-		<cfset local.return["jti"] = '#replace(createUUID(), "-", "", "all")#' />
+		return local.return;
+	}
 
-		<cfreturn local.return />
-	</cffunction>
+	/**
+	 * perform the API Request to get the Auth Token
+	 */
+	private struct function getOAUTHToken(
+		required string jwtAssertion
+	) output=false {
+		local.url = "#this.boxAPIURL#oauth2/token";
+		local.httpParams = arrayNew(1);
 
-	<cffunction name="getOAUTHToken"    returnType="struct" access="private" output="false" hint="perform the API Request to get the Auth Token ">
-		<cfargument name="jwtAssertion" type="string" required="true" />
+		arrayAppend(local.httpParams, { "type": "formfield", "name": "grant_type",    "value": "urn:ietf:params:oauth:grant-type:jwt-bearer" });
+		arrayAppend(local.httpParams, { "type": "formfield", "name": "client_id",     "value": variables.boxAuth.getClientID() });
+		arrayAppend(local.httpParams, { "type": "formfield", "name": "client_secret", "value": variables.boxAuth.getClientSecret() });
+		arrayAppend(local.httpParams, { "type": "formfield", "name": "assertion",     "value": arguments.jwtAssertion });
 
-		<cfset local.url = "#this.boxAPIURL#oauth2/token" />
-		<cfset local.httpParams = arrayNew(1) />
-
-		<cfset arrayAppend(local.httpParams, { "type": "formfield", "name": "grant_type",    "value": "urn:ietf:params:oauth:grant-type:jwt-bearer" }) />
-		<cfset arrayAppend(local.httpParams, { "type": "formfield", "name": "client_id",     "value": variables.boxAuth.getClientID() }) />
-		<cfset arrayAppend(local.httpParams, { "type": "formfield", "name": "client_secret", "value": variables.boxAuth.getClientSecret() }) />
-		<cfset arrayAppend(local.httpParams, { "type": "formfield", "name": "assertion",     "value": arguments.jwtAssertion }) />
-
-		<cfset local.auth = send(
+		local.auth = send(
 			url        = local.url,
 			method     = "POST",
 			httpParams = local.httpParams,
 			logCall    = false
-		) />
+		);
 
-		<cfreturn local.auth />
-	</cffunction>
+		return local.auth;
+	}
 
-	<cffunction name="send"             returnType="struct" access="private" output="false" hint="send request to REST API">
-		<cfargument name="url"         type="string"  required="true" />
-		<cfargument name="method"      type="string"  required="true" />
-		<cfargument name="getasbinary" type="boolean" required="true" default="no"    />
-		<cfargument name="httpParams"  type="array"   required="true" default="no"    />
-		<cfargument name="logCall"     type="boolean" required="true" default="true"  />
-		<cfargument name="debug"       type="boolean" required="true" default="false" />
+	/**
+	 * send request to REST API
+	 */
+	private struct function send(
+		required string url,
+		required string method,
+		required boolean getasbinary="no",
+		required array httpParams="no",
+		required boolean logCall="true",
+		required boolean debug="false"
+	) output=false {
+		local.logID = 0;
 
-		<cfset local.logID = 0 />
-		<cfif structKeyExists(variables, "boxAPILog") AND arguments.logCall>
-			<cfset local.logID = variables.boxAPILog.setLog( argumentCollection = arguments ) />
-		</cfif>
+		if ( structKeyExists(variables, "boxAPILog") && arguments.logCall ) {
+			local.logID = variables.boxAPILog.setLog( argumentCollection = arguments );
+		}
+		if ( arguments.debug ) {
+			writeDump( var=arguments, abort=0 );
+		}
 
-		<cfif arguments.debug>
-			<cfdump var="#arguments#" />
-			<!--- <cfabort /> --->
-		</cfif>
+		try {
+			cfhttp( getasbinary=arguments.getasbinary, throwonerror=false, url=arguments.url, result="local.response", method=arguments.method ) {
+				for ( local.itm in arguments.httpParams ) {
+					if ( structKeyExists(local.itm, "value") ) {
+						cfhttpparam( name=local.itm.name, type=local.itm.type, value=local.itm.value );
+					} else if ( structKeyExists(local.itm, "file") ) {
+						cfhttpparam( file=local.itm.file, name=local.itm.name, type=local.itm.type );
+					}
+				}
+			}
+		} catch (any cfcatch) {
+			rethrow;
+		}
 
-		<cftry>
-
-			<cfhttp url="#arguments.url#" method="#arguments.method#" throwonerror="false" result="local.response" getasbinary="#arguments.getasbinary#">
-				<cfloop array="#arguments.httpParams#" index="local.idx" item="local.itm">
-					<cfif structKeyExists(local.itm, "value")>
-						<cfhttpparam type="#local.itm.type#" name="#local.itm.name#" value="#local.itm.value#" />
-					<cfelseif structKeyExists(local.itm, "file")>
-						<cfhttpparam type="#local.itm.type#" name="#local.itm.name#" file="#local.itm.file#" />
-					</cfif>
-				</cfloop>
-			</cfhttp>
-
-			<cfcatch type="any">
-				<cfrethrow />
-			</cfcatch>
-		</cftry>
-
-		<cfif local.logID>
-			<cfset variables.boxAPILog.updateLog(
+		if ( local.logID ) {
+			variables.boxAPILog.updateLog(
 				logID        = local.logID,
 				responseCode = local.response.statusCode,
 				response     = local.response
-			) />
-		</cfif>
-		<cfif arguments.debug>
-			<cfdump var="#local.response#" /><cfabort />
-		</cfif>
+			);
+		}
 
-		<cfset local.return = handleResponse(local.response, arguments.url, arguments.getasbinary) />
+		if ( arguments.debug ) {
+			writeDump( var=local.response, abort=1 );
+		}
+		local.return = handleResponse(local.response, arguments.url, arguments.getasbinary);
 
-		<cfreturn local.return />
-	</cffunction>
+		return local.return;
+	}
 
-	<cffunction name="handleResponse"   returnType="struct" access="private" output="false" hint="parseResponse from Box API">
-		<cfargument name="response"     type="struct" required="true" />
-		<cfargument name="url"          type="string" required="true" />
-		<cfargument name="returnBinary" type="string" required="false" default="no" />
-		<cfset local.return = structNew() />
+	/**
+	 * parseResponse from Box API
+	 */
+	private struct function handleResponse(
+		required struct response,
+		required string url, string returnBinary="no"
+	) output=false {
+		local.return = structNew();
+		local.return.success = false;
+		local.return.statusCode = arguments.response.statusCode;
 
-		<cfset local.return.success = false />
-		<cfset local.return.statusCode = arguments.response.statusCode />
-
-		 <cfswitch expression="#val(left(arguments.response.statusCode, 3))#">
-			<!---
+		switch ( val(left(arguments.response.statusCode, 3)) ) {
+			/*
 				200 OK
 				201 Created
 				204 No Content
-			 --->
-		 	<cfcase value="200,201,204">
-				<cftry>
-					<cfif returnBinary EQ 'no' AND len(arguments.response.fileContent)>
-						<cfset structAppend(local.return, deserializeJSON(arguments.response.fileContent)) />
-					<cfelse>
-						<cfset local.return.content = arguments.response.fileContent />
-					</cfif>
-					<cfset local.return.success = true />
-					<cfcatch>
-						<!--- could not JSON Parse response; but it was a 200OK --->
-						<cfset local.return.success = true />
-						<cfrethrow />
-					</cfcatch>
-				</cftry>
-		 	</cfcase>
-			<!---
+			 */
+			case  200:
+			case  201:
+			case  204:
+				try {
+					if ( returnBinary == 'no' && len(arguments.response.fileContent) ) {
+						structAppend(local.return, deserializeJSON(arguments.response.fileContent));
+					} else {
+						local.return.content = arguments.response.fileContent;
+					}
+					local.return.success = true;
+				} catch (any cfcatch) {
+					//  could not JSON Parse response; but it was a 200OK
+					local.return.success = true;
+					rethrow;
+				}
+				break;
+
+			/*
 				409 Conflict - name of object already in use
-			 --->
-		 	<cfcase value="409">
-				<cfif returnBinary EQ 'no' AND len(arguments.response.fileContent)>
-						<cfset structAppend(local.return, deserializeJSON(arguments.response.fileContent)) />
-				<cfelse>
-					<cfset local.return.content = arguments.response.fileContent />
-				</cfif>
-		 	</cfcase>
+			 */
+			case  409:
+				if ( returnBinary == 'no' && len(arguments.response.fileContent) ) {
+					structAppend(local.return, deserializeJSON(arguments.response.fileContent));
+				} else {
+					local.return.content = arguments.response.fileContent;
+				}
+				break;
 
-		 	<cfdefaultcase>
-		 	</cfdefaultcase>
-		 </cfswitch>
+			default:
+				break;
+		}
 
-		<cfreturn local.return />
-	</cffunction>
-</cfcomponent>
+		return local.return;
+	}
+
+}

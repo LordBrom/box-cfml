@@ -1,31 +1,36 @@
-<cfcomponent output="false" hint="Submits api log information to the database">
+/**
+ * Submits api log information to the database
+ */
+component output="false" hint="Submits api log information to the database" {
 
-	<cffunction name="init" returntype="boxAPILogHandler" access="public" output="false" hint="Constructor">
-		<cfargument name="datasource"  type="string"  required="true" default=""      hint="" />
-		<cfargument name="tableName"   type="string"  required="true" default=""      hint="" />
-		<cfargument name="createTable" type="boolean" required="true" default="false" hint="" />
+	public boxAPILogHandler function init(
+		required string datasource="",
+		required string tableName="",
+		required boolean createTable="false"
+	) output=false {
+		variables.datasource = arguments.datasource;
+		variables.tableName  = arguments.tableName;
+		if ( arguments.createTable ) {
+			createLogTable();
+		}
+		return this;
+	}
 
-		<cfset variables.datasource = arguments.datasource />
-		<cfset variables.tableName  = arguments.tableName />
+	/**
+	 * Adds a BoxAPI log record.
+	 */
+	public numeric function setLog(
+		required string url,
+		required string method,
+		required boolean getasbinary="no",
+		required array httpParams="no"
+	) output=false {
+		local.return = -1;
+		try {
+			//  QUERY - INSERT
+			cfquery( datasource=variables.datasource, result="local.ins" ) { //Note: queryExecute() is the preferred syntax but this syntax is easier to convert generically
 
-		<cfif arguments.createTable>
-			<cfset createLogTable() />
-		</cfif>
-
-		<cfreturn this />
-	</cffunction>
-
-	<cffunction name="setLog" access="public" returntype="numeric" output="false" hint="Adds a BoxAPI log record.">
-		<cfargument name="url"         type="string"  required="true" />
-		<cfargument name="method"      type="string"  required="true" />
-		<cfargument name="getasbinary" type="boolean" required="true" default="no"   />
-		<cfargument name="httpParams"  type="array"   required="true" default="no"   />
-		<cfset local.return = -1 />
-
-		<cftry>
-			<!--- QUERY - INSERT --->
-			<cfquery datasource="#variables.datasource#" result="local.ins">
-				INSERT INTO [#variables.tableName#]
+				writeOutput("INSERT INTO [#variables.tableName#]
 				(
 					url,
 					method,
@@ -33,126 +38,141 @@
 					httpParams,
 					datetimeSent
 				)
-				VALUES (
-					<cfqueryparam cfsqltype="CF_SQL_VARCHAR"   value="#arguments.url#" />,
-					<cfqueryparam cfsqltype="CF_SQL_VARCHAR"   value="#arguments.method#" />,
-					<cfqueryparam cfsqltype="CF_SQL_BIT"       value="#arguments.getasbinary#" />,
-					<cfqueryparam cfsqltype="CF_SQL_VARCHAR"   value="#reReplace(SerializeJSON(arguments.httpParams), 'Bearer ([^".]*)"', 'Bearer <access_token>"')#" />,
-					<cfqueryparam cfsqltype="CF_SQL_TIMESTAMP" value="#now()#" />
-				)
-			</cfquery>
-			<cfset local.return = local.ins.generatedKey />
+				VALUES (");
+				cfqueryparam( cfsqltype="CF_SQL_VARCHAR", value=arguments.url );
 
-			<cfcatch>
+				writeOutput(",");
+				cfqueryparam( cfsqltype="CF_SQL_VARCHAR", value=arguments.method );
 
-				<cfif structKeyExists(application,'bugTracker')>
-					<cfset exceptionStruct = cfcatch />
-					<cfset extraInfoStruct = structNew() />
-					<cfset extraInfoStruct._callStack = CallStackGet() />
-					<cfset extraInfoStruct.arguments  = arguments />
-					<cfset extraInfoStruct.local      = local />
-					<cfset extraInfoStruct.variables  = variables />
+				writeOutput(",");
+				cfqueryparam( cfsqltype="CF_SQL_BIT", value=arguments.getasbinary );
 
-					<cfset application.bugTracker.notifyService(
+				writeOutput(",");
+				cfqueryparam( cfsqltype="CF_SQL_VARCHAR", value=reReplace(SerializeJSON(arguments.httpParams), 'Bearer ([^".]*)"', 'Bearer <access_token>"') );
+
+				writeOutput(",");
+				cfqueryparam( cfsqltype="CF_SQL_TIMESTAMP", value=now() );
+
+				writeOutput(")");
+			}
+			local.return = local.ins.generatedKey;
+		} catch (any cfcatch) {
+			if ( structKeyExists(application,'bugTracker') ) {
+				exceptionStruct = cfcatch;
+				extraInfoStruct = structNew();
+				extraInfoStruct._callStack = CallStackGet();
+				extraInfoStruct.arguments  = arguments;
+				extraInfoStruct.local      = local;
+				extraInfoStruct.variables  = variables;
+				application.bugTracker.notifyService(
 						message      = "Error logging API interaction to [#variables.tableName#] on #cgi.server_name#",
 						exception    = exceptionStruct,
 						ExtraInfo    = extraInfoStruct,
 						severityCode = "error"
-					) />
-				<cfelse>
-					<cfrethrow />
-				</cfif>
-			</cfcatch>
-		</cftry>
+					);
+			} else {
+				rethrow;
+			}
+		}
+		return local.return;
+	}
 
-		<cfreturn local.return />
-	</cffunction>
+	/**
+	 * Updates a log with response data.
+	 */
+	public void function updateLog(
+		required numeric logID, string responseCode, any response) {
+		try {
+			//  Update log event with response
+			cfquery( datasource=variables.datasource, result="local.update" ) { //Note: queryExecute() is the preferred syntax but this syntax is easier to convert generically
 
-	<cffunction name="updateLog" access="public" returntype="void" hint="Updates a log with response data.">
-		<cfargument name="logID"        required="true"  type="numeric" hint="ID" />
-		<cfargument name="responseCode" required="false" type="string"  hint="response statuscode (200 OK,401 message, etc)" />
-		<cfargument name="response"     required="false" type="any"     hint="the API's full cfhttp response" />
-		<cftry>
-			<!--- Update log event with response --->
-			<cfquery datasource="#variables.datasource#" result="local.update">
-				UPDATE [#variables.tableName#]
-				SET
+				writeOutput("UPDATE [#variables.tableName#]
+				SET");
+				if ( structKeyExists(arguments, "responseCode") ) {
 
-					<cfif structKeyExists(arguments, "responseCode")>
-						responseCode = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#arguments.responseCode#" />,
-					</cfif>
-					<cfif structKeyExists(arguments, "response")>
-						response = <cfqueryparam cfsqltype="CF_SQL_VARCHAR" value="#serializeJSON(arguments.response)#" />,
-					</cfif>
-					datetimeReceived=getDate()
+					writeOutput("responseCode =");
+					cfqueryparam( cfsqltype="CF_SQL_VARCHAR", value=arguments.responseCode );
+
+					writeOutput(",");
+				}
+				if ( structKeyExists(arguments, "response") ) {
+
+					writeOutput("response =");
+					cfqueryparam( cfsqltype="CF_SQL_VARCHAR", value=serializeJSON(arguments.response) );
+
+					writeOutput(",");
+				}
+
+				writeOutput("datetimeReceived=getDate()
 				WHERE
-					boxApiLogID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#arguments.logID#" />
-
-			</cfquery>
-
-			<cfcatch>
-				<cfif structKeyExists(application,'bugTracker')>
-					<cfset exceptionStruct = cfcatch />
-					<cfset extraInfoStruct = structNew() />
-					<cfset extraInfoStruct._callStack = CallStackGet() />
-					<cfset extraInfoStruct.arguments  = arguments />
-					<cfset extraInfoStruct.local      = local />
-					<cfset extraInfoStruct.variables  = variables />
-
-					<cfset application.bugTracker.notifyService(
+					boxApiLogID =");
+				cfqueryparam( cfsqltype="CF_SQL_INTEGER", value=arguments.logID );
+			}
+		} catch (any cfcatch) {
+			if ( structKeyExists(application,'bugTracker') ) {
+				exceptionStruct = cfcatch;
+				extraInfoStruct = structNew();
+				extraInfoStruct._callStack = CallStackGet();
+				extraInfoStruct.arguments  = arguments;
+				extraInfoStruct.local      = local;
+				extraInfoStruct.variables  = variables;
+				application.bugTracker.notifyService(
 					   message      = "Error UPDATING API log to [#variables.tableName#] on #cgi.server_name#",
 					   exception    = exceptionStruct,
 					   ExtraInfo    = extraInfoStruct,
 					   severityCode = "error"
-					) />
-				<cfelse>
-					<cfrethrow />
-				</cfif>
-			</cfcatch>
-		</cftry>
+					);
+			} else {
+				rethrow;
+			}
+		}
+		return;
+	}
 
-		<cfreturn />
-	</cffunction>
+	/**
+	 * Deletes a log.
+	 */
+	public void function hardDeleteLog(
+		required numeric logID) {
+		try {
+			//  Update log event with response
+			cfquery( datasource=variables.datasource, result="local.update" ) { //Note: queryExecute() is the preferred syntax but this syntax is easier to convert generically
 
-	<cffunction name="hardDeleteLog" access="public" returntype="void" hint="Deletes a log.">
-		<cfargument name="logID" required="true" type="numeric"    hint="ID" />
-		<cftry>
-			<!--- Update log event with response --->
-			<cfquery datasource="#variables.datasource#" result="local.update">
-				DELETE FROM [#variables.tableName#]
+				writeOutput("DELETE FROM [#variables.tableName#]
 				WHERE
-					boxApiLogID = <cfqueryparam cfsqltype="CF_SQL_INTEGER" value="#arguments.logID#" />
-			</cfquery>
-
-			<cfcatch>
-				<cfif structKeyExists(application,'bugTracker')>
-					<cfset exceptionStruct = cfcatch />
-					<cfset extraInfoStruct = structNew() />
-					<cfset extraInfoStruct._callStack = CallStackGet() />
-					<cfset extraInfoStruct.arguments  = arguments />
-					<cfset extraInfoStruct.local      = local />
-					<cfset extraInfoStruct.variables  = variables />
-
-					<cfset application.bugTracker.notifyService(
+					boxApiLogID =");
+				cfqueryparam( cfsqltype="CF_SQL_INTEGER", value=arguments.logID );
+			}
+		} catch (any cfcatch) {
+			if ( structKeyExists(application,'bugTracker') ) {
+				exceptionStruct = cfcatch;
+				extraInfoStruct = structNew();
+				extraInfoStruct._callStack = CallStackGet();
+				extraInfoStruct.arguments  = arguments;
+				extraInfoStruct.local      = local;
+				extraInfoStruct.variables  = variables;
+				application.bugTracker.notifyService(
 					   message      = "Error DELETING API log from [#variables.tableName#] on #cgi.server_name#",
 					   exception    = exceptionStruct,
 					   ExtraInfo    = extraInfoStruct,
 					   severityCode = "error"
-					) />
-				<cfelse>
-					<cfrethrow />
-				</cfif>
-			</cfcatch>
-		</cftry>
+					);
+			} else {
+				rethrow;
+			}
+		}
+		return;
+	}
 
-		<cfreturn />
-	</cffunction>
+	/**
+	 * Creates the log database table, if it doesn't already exist.
+	 */
+	public void function createLogTable() {
+		try {
+			//  Update log event with response
+			cfquery( datasource=variables.datasource, result="local.update" ) { //Note: queryExecute() is the preferred syntax but this syntax is easier to convert generically
 
-	<cffunction name="createLogTable" access="public" returntype="void" hint="Creates the log database table, if it doesn't already exist.">
-		<cftry>
-			<!--- Update log event with response --->
-			<cfquery datasource="#variables.datasource#" result="local.update">
-				IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[#variables.tableName#]') AND type in (N'U'))
+				writeOutput("IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[#variables.tableName#]') AND type in (N'U'))
 				BEGIN
 					CREATE TABLE [dbo].[boxApiLog](
 						[boxApiLogID] [int] IDENTITY(1,1) NOT NULL,
@@ -169,30 +189,27 @@
 						[boxApiLogID] ASC
 					)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 					) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-				END
-			</cfquery>
-
-			<cfcatch>
-				<cfif structKeyExists(application,'bugTracker')>
-					<cfset exceptionStruct = cfcatch />
-					<cfset extraInfoStruct = structNew() />
-					<cfset extraInfoStruct._callStack = CallStackGet() />
-					<cfset extraInfoStruct.arguments  = arguments />
-					<cfset extraInfoStruct.local      = local />
-					<cfset extraInfoStruct.variables  = variables />
-
-					<cfset application.bugTracker.notifyService(
+				END");
+			}
+		} catch (any cfcatch) {
+			if ( structKeyExists(application,'bugTracker') ) {
+				exceptionStruct = cfcatch;
+				extraInfoStruct = structNew();
+				extraInfoStruct._callStack = CallStackGet();
+				extraInfoStruct.arguments  = arguments;
+				extraInfoStruct.local      = local;
+				extraInfoStruct.variables  = variables;
+				application.bugTracker.notifyService(
 					   message      = "Error CREATING API log table [#variables.tableName#] on #cgi.server_name#",
 					   exception    = exceptionStruct,
 					   ExtraInfo    = extraInfoStruct,
 					   severityCode = "error"
-					) />
-				<cfelse>
-					<cfrethrow />
-				</cfif>
-			</cfcatch>
-		</cftry>
+					);
+			} else {
+				rethrow;
+			}
+		}
+		return;
+	}
 
-		<cfreturn />
-	</cffunction>
-</cfcomponent>
+}

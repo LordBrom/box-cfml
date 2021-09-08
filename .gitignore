@@ -1,6 +1,7 @@
-/src/boxAuthentication.cfc
+boxAuthentication.cfc
 
-/testbox
-/*.sublime-project
-/*.sublime-workspace
+testbox
+*.sublime-project
+*.sublime-workspace
 
+.vscode
