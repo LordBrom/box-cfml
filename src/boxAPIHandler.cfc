@@ -225,7 +225,8 @@ component output="false" hint="Contains functions that interact with the Box.com
 	 */
 	private struct function handleResponse(
 		required struct response,
-		required string url, string returnBinary="no"
+		required string url,
+		string returnBinary="no"
 	) output=false {
 		local.return = structNew();
 		local.return.success = false;

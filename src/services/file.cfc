@@ -121,10 +121,11 @@ component output="false" hint="Box service layer for file objects." {
 		local.jsonBody['parent']['id'] = arguments.ParentID;
 		local.apiResponse = variables.boxAPIHandler.makeRequest(
 			object     = this.objectName,
-			objectID   = arguments.fileID,
+			objectID   = arguments.SourceID,
 			method     = "copy",
 			httpMethod = "POST",
-			userID     = arguments.asUserID
+			userID     = arguments.asUserID,
+			jsonBody   = local.jsonBody
 		);
 		return local.apiResponse;
 	}

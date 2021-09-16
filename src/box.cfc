@@ -19,6 +19,7 @@ component output="false" accessors="true" hint="Box service layer." {
 		setUploadSessionService( createObject("component", "services.uploadSession").init( local.boxAPIHandler ) );
 		return this;
 	}
+
 	/* -------------------------------------------------------------------
 	  --------------------------------SEARCH--------------------------------
 	  -------------------------------------------------------------------*/
@@ -33,6 +34,7 @@ component output="false" accessors="true" hint="Box service layer." {
 		local.return = getSearchService().searchForContent( argumentCollection = arguments );
 		return local.return;
 	}
+
 	/* ------------------------------------------------------------------
 	  --------------------------------FILES--------------------------------
 	  ------------------------------------------------------------------*/
@@ -185,6 +187,7 @@ component output="false" accessors="true" hint="Box service layer." {
 		local.return = getFileService().deleteVersion( argumentCollection = arguments );
 		return local.return;
 	}
+
 	/* ------------------------------------------------------------------
 	  -------------------------------FOLDERS-------------------------------
 	  ------------------------------------------------------------------*/
@@ -285,6 +288,7 @@ component output="false" accessors="true" hint="Box service layer." {
 		local.return = getFolderService().getCollaborations( argumentCollection = arguments );
 		return local.return;
 	}
+
 	/* ------------------------------------------------------------------
 	  --------------------------------USERS--------------------------------
 	  ------------------------------------------------------------------*/
@@ -311,6 +315,7 @@ component output="false" accessors="true" hint="Box service layer." {
 		local.return = getUserService().createAppUser( argumentCollection = arguments );
 		return local.return;
 	}
+
 	/* -------------------------------------------------------------------
 	  ----------------------------COLLABORATIONS----------------------------
 	  -------------------------------------------------------------------*/
@@ -331,6 +336,7 @@ component output="false" accessors="true" hint="Box service layer." {
 		local.return = getCollaborationService().create( argumentCollection = arguments );
 		return local.return;
 	}
+
 	/* -------------------------------------------------------------------
 	  ----------------------------UPLOAD SESSION----------------------------
 	  -------------------------------------------------------------------*/
