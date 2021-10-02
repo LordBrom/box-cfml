@@ -8,7 +8,7 @@ component {
 
 	public function onRequest(required string template) {
 		application.boxService = new src.box();
-		application.boxService.init();
+
 		include arguments.template;
 	}
 
