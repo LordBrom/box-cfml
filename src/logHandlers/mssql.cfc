@@ -1,8 +1,8 @@
-component output="false" accessors="true" hint="MySQL database handler for logging API interactions." {
+component output="false" accessors="true" hint="MSSQL database handler for logging API interactions." {
 	property name="datasource" type="string";
 	property name="tableName" type="string";
 
-	public mysql function init(
+	public mssql function init(
 		required string datasource="",
 		required string tableName="boxApiLog"
 	) output=false {
