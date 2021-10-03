@@ -9,8 +9,16 @@ component output="false" accessors="true" hint="Box service layer." {
 	property name="collaborationService" type="collaboration";
 	property name="uploadSessionService" type="uploadSession";
 
-	public box function init() output=false {
-		local.boxAPIHandler = createObject("component", "boxAPIHandler").init();
+	public box function init(
+		required string logDatasource="",
+		required string logTableName="boxApiLog",
+		required string logDbType="mysql"
+	) output=false {
+		local.boxAPIHandler = createObject("component", "boxAPIHandler").init(
+			logDatasource = arguments.logDatasource,
+			logTableName = arguments.logTableName,
+			logDbType = arguments.logDbType
+		);
 		setFileService(          createObject("component", "services.file"         ).init( local.boxAPIHandler ) );
 		setFolderService(        createObject("component", "services.folder"       ).init( local.boxAPIHandler ) );
 		setUserService(          createObject("component", "services.user"         ).init( local.boxAPIHandler ) );

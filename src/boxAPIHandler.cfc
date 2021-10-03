@@ -7,8 +7,9 @@ component output="false" hint="Contains functions that interact with the Box.com
 	this.boxAPIVersion   = "2.0";
 
 	public boxAPIHandler function init(
-		required string boxAPIlogDatasource="",
-		required string boxAPIlogTableName=""
+		required string logDatasource="",
+		required string logTableName="",
+		required string logDbType=""
 	) output=false {
 		variables.boxAuth = createObject("component", "boxAuthentication");
 		variables.JWT     = createObject("component", "jwtTools.lib.JsonWebTokens");
@@ -18,8 +19,17 @@ component output="false" hint="Contains functions that interact with the Box.com
 		variables.issued_at    = "";
 		variables.defaultUserID = variables.boxAuth.getDefaultUserID();
 
-		if ( len(arguments.boxAPIlogDatasource) && len(arguments.boxAPIlogTableName) ) {
-			variables.boxAPILog = createObject("component", "boxAPILogHandler").init(arguments.boxAPIlogDatasource, arguments.boxAPIlogTableName);
+		if ( len(arguments.logDatasource) && len(arguments.logTableName) ) {
+			switch (arguments.logDbType) {
+				case 'mssql':
+					variables.boxAPILog = createObject("component", "logHandlers.mssql").init(arguments.logDatasource, arguments.logTableName);
+					break;
+				case 'mysql':
+					variables.boxAPILog = createObject("component", "logHandlers.mysql").init(arguments.logDatasource, arguments.logTableName);
+					break;
+				default:
+					throw 'Unsupported  database type.';
+			}
 		}
 
 		return this;
@@ -205,10 +215,18 @@ component output="false" hint="Contains functions that interact with the Box.com
 		}
 
 		if ( local.logID ) {
+			try {
+				local.responseToLog = serializeJSON(local.response);
+			} catch (any ex) {
+				local.responseTmp = duplicate(local.response);
+				local.responseTmp.fileContent = "File content can't be serialized";
+				local.responseToLog = serializeJSON(local.responseTmp);
+			}
+
 			variables.boxAPILog.updateLog(
 				logID        = local.logID,
 				responseCode = local.response.statusCode,
-				response     = local.response
+				response     = local.responseToLog
 			);
 		}
 

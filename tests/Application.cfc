@@ -16,7 +16,7 @@ component{
 	// request start
 	public boolean function onRequestStart( String targetPage ){
 		application.boxService = new src.box();
-		application.boxService.init();
+
 		return true;
 	}
 }
